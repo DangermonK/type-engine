@@ -5,13 +5,14 @@ import { Entity } from "../management/Entity.abstract";
 import { Scene } from "../management/Scene.abstract";
 import { v4 as uuidv4 } from "uuid";
 import { SceneScript } from "../management/SceneScript.abstract";
+import { SampleScene } from "./SampleScene";
 
 
-export class EntityFactory extends SceneScript {
+export class EntityFactory extends SceneScript<SampleScene> {
 
     private readonly _entityHandler: EntityHandler;
 
-    constructor(scene: Scene) {
+    constructor(scene: SampleScene) {
         super(scene);
         this._entityHandler = this.requireScript(EntityHandler);
     }
@@ -22,7 +23,7 @@ export class EntityFactory extends SceneScript {
     initialize(): void {
     }
 
-    instantiate<Type extends Entity>(entity: new(...args: any) => Type): Type {
+    instantiate<Type extends Entity<SampleScene>>(entity: new(...args: any) => Type): Type {
         return this._entityHandler.addEntity(new entity(uuidv4(), this.container));
     }
 

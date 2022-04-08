@@ -2,7 +2,7 @@ import { Entity } from "../management/Entity.abstract";
 import { SampleScene } from "./SampleScene";
 import { SampleComponent } from "./SampleComponent";
 
-export class SampleEntity extends Entity {
+export class SampleEntity extends Entity<SampleScene> {
 
     constructor(id: string, scene: SampleScene) {
         super(id, scene);

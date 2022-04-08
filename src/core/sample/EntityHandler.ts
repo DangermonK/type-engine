@@ -2,31 +2,32 @@ import { Entity } from "../management/Entity.abstract";
 import { SceneScript } from "../management/SceneScript.abstract";
 import { Scene } from "../management/Scene.abstract";
 import { IRunnable } from "../container/IRunnable";
+import { SampleScene } from "./SampleScene";
 
-export class EntityHandler extends SceneScript implements IRunnable {
+export class EntityHandler extends SceneScript<SampleScene> implements IRunnable {
 
-    private readonly _entityMap: Map<string, Entity>;
+    private readonly _entityMap: Map<string, Entity<SampleScene>>;
 
-    constructor(scene: Scene) {
+    constructor(scene: SampleScene) {
         super(scene);
-        this._entityMap = new Map<string, Entity>();
+        this._entityMap = new Map<string, Entity<SampleScene>>();
     }
 
-    get entities(): Array<Entity> {
+    get entities(): Array<Entity<SampleScene>> {
         return [...this._entityMap.values()];
     }
 
-    getEntitiesOfType<Type extends Entity>(type: new(...args: Array<any>) => Type): Array<Type> {
+    getEntitiesOfType<Type extends Entity<SampleScene>>(type: new(...args: Array<any>) => Type): Array<Type> {
         return this.entities.filter(entity => entity instanceof type) as Array<Type>;
     }
 
-    addEntity<Type extends Entity>(entity: Type): Type {
+    addEntity<Type extends Entity<SampleScene>>(entity: Type): Type {
         this._entityMap.set(entity.id, entity);
         entity.initialize();
         return entity;
     }
 
-    removeEntity<Type extends Entity>(entity: Type): void {
+    removeEntity<Type extends Entity<SampleScene>>(entity: Type): void {
         this._entityMap.delete(entity.id);
     }
 

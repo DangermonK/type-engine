@@ -4,7 +4,7 @@ import { SceneScript } from "./SceneScript.abstract";
 import { IRunnable } from "../container/IRunnable";
 
 
-export abstract class Scene extends Container<SceneScript> implements IRunnable {
+export abstract class Scene extends Container<SceneScript<Scene>> implements IRunnable {
 
     protected constructor() {
         super();

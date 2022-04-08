@@ -3,13 +3,13 @@ import { Scene } from "./Scene.abstract";
 import { Processor } from "../container/Processor";
 import { Component } from "./Component.asbtract";
 
-export abstract class Entity extends Processor<Component>  {
+export abstract class Entity<Type extends Scene> extends Processor<Component<Type>>  {
 
-    private readonly _scene!: Scene;
+    private readonly _scene!: Type;
 
     private readonly _id!: string;
 
-    protected constructor(id: string, scene: Scene) {
+    protected constructor(id: string, scene: Type) {
         super();
         this._scene = scene;
         this._id = id;
@@ -19,7 +19,7 @@ export abstract class Entity extends Processor<Component>  {
         return this._id;
     }
 
-    get scene(): Scene {
+    get scene(): Type {
         return this._scene;
     }
 
