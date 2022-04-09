@@ -20,11 +20,6 @@ export class EntityHandler extends ScratchSceneScript {
         return entity;
     }
 
-    addEntityStatic<Type extends ScratchEntity>(entity: Type): Type {
-        this._entityStaticMap.set(entity.id, entity);
-        return entity;
-    }
-
     removeEntity(entity: ScratchEntity): void {
         this._entityMap.delete(entity.id);
     }
