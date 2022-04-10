@@ -30,7 +30,7 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
     stop(): void {
     }
 
-    update(): void {
+    update(): void {    // TODO: update hashgrid in fixed Update?
         this._entityHashMap.clear();
         this._entityMap.forEach(this._entityHashMap.pushElement);
 

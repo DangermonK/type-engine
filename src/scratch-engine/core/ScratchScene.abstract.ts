@@ -20,15 +20,19 @@ export abstract class ScratchScene extends Container<ScratchSceneScript> impleme
     }
 
     fixedUpdate(): void {
+        this._entityHandler.fixedUpdate();
     }
 
     start(): void {
+        this._entityHandler.start();
     }
 
     stop(): void {
+        this._entityHandler.stop();
     }
 
     update(): void {
+        this._entityHandler.update();
     }
 
 }
