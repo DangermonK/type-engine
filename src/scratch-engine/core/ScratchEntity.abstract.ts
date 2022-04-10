@@ -1,7 +1,7 @@
 import { ScratchScene } from "./ScratchScene.abstract";
-import { TransformComponent } from "../components/TransformComponent";
 import { Processor } from "../../core/container/Processor";
 import { ScratchComponent } from "./ScratchComponent.abstract";
+import { Transform } from "../utils/Transform";
 
 
 export abstract class ScratchEntity extends Processor<ScratchComponent> {
@@ -9,15 +9,19 @@ export abstract class ScratchEntity extends Processor<ScratchComponent> {
     private readonly _scene: ScratchScene;
     private readonly _id: string;
 
-    public readonly transform: TransformComponent;
+    public readonly isStatic: boolean;
 
-    protected constructor(id: string, scene: ScratchScene) {
+    public readonly transform: Transform;
+
+    protected constructor(id: string, scene: ScratchScene, isStatic: boolean) {
         super();
 
         this._scene = scene;
         this._id = id;
 
-        this.transform = this.requireType(TransformComponent);
+        this.isStatic = isStatic;
+
+        this.transform = new Transform();
     }
 
     get id(): string {
