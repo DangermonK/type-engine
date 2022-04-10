@@ -4,7 +4,6 @@ import { ScratchEntity } from "../core/ScratchEntity.abstract";
 import { IRunnable } from "../../core/container/IRunnable";
 import { HashedGrid } from "../utils/HashedGrid";
 
-
 export class EntityHandler extends ScratchSceneScript implements IRunnable {
 
     private readonly _entityMap: Map<string, ScratchEntity>;
@@ -30,14 +29,14 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
     stop(): void {
     }
 
-    update(): void {    // TODO: update hashgrid in fixed Update?
-        this._entityHashMap.clear();
-        this._entityMap.forEach(this._entityHashMap.pushElement);
-
+    update(): void {
         this.entities.forEach(entity => entity.update());
     }
 
     fixedUpdate(): void {
+        this._entityHashMap.clear();
+        this._entityMap.forEach(this._entityHashMap.pushElement);
+
         this.entities.forEach(entity => entity.fixedUpdate());
     }
 
