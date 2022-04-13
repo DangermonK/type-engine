@@ -11,6 +11,11 @@ export class Vector2 {
         this.y = y;
     }
 
+    set(x: number, y: number): void {
+      this.x = x;
+      this.y = y;
+    }
+
     add(vec: Vector2): void {
         this.x += vec.x;
         this.y += vec.y;

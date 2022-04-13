@@ -35,13 +35,17 @@ export class HashedGrid {
         }
     }
 
+    private buildHash(x: number, y: number): string {
+      return x + ":" + y;
+    }
+
     pushElement(entity: ScratchEntity): void {
         entity.transform.clearHashCoords();
         const corners = this.getCorners(entity);
 
         for(let i = corners.yMin; i <= corners.yMax; i++) {
             for (let j = corners.xMin; j <= corners.xMax; j++) {
-                const hash = "" + j + i;
+                const hash = this.buildHash(j, i);
                 entity.transform.addHashCoords(hash);
                 this.pushHash(hash, entity.id);
             }
@@ -58,7 +62,7 @@ export class HashedGrid {
     }
 
     getElementsFromAt(x: number, y: number): Array<string> {
-        const hash = "" + x + y;
+        const hash = this.buildHash(x, y);
 
         return this._hashedGrid.get(hash) || [];
     }
@@ -69,7 +73,7 @@ export class HashedGrid {
         let arr: Array<string> = new Array<string>();
         for(let i = corners.yMin; i < corners.yMax; i++) {
             for (let j = corners.xMin; j < corners.xMax; j++) {
-                const hash = "" + j + i;
+                const hash = this.buildHash(j, i);
                 arr = arr.concat(this._hashedGrid.get(hash) || []);
             }
         }
