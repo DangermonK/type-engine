@@ -23,7 +23,7 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
     }
 
     start(): void {
-        this._staticMap.forEach(this._staticHashMap.pushElement);
+        this._staticMap.forEach(entity => this._staticHashMap.pushElement(entity));
     }
 
     stop(): void {
@@ -35,7 +35,7 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
 
     fixedUpdate(): void {
         this._entityHashMap.clear();
-        this._entityMap.forEach(this._entityHashMap.pushElement);
+        this._entityMap.forEach(entity => this._entityHashMap.pushElement(entity));
 
         this.entities.forEach(entity => entity.fixedUpdate());
     }

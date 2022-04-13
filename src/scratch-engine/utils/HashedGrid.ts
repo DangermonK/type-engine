@@ -36,10 +36,11 @@ export class HashedGrid {
     }
 
     pushElement(entity: ScratchEntity): void {
+        entity.transform.clearHashCoords();
         const corners = this.getCorners(entity);
 
-        for(let i = corners.yMin; i < corners.yMax; i++) {
-            for (let j = corners.xMin; j < corners.xMax; j++) {
+        for(let i = corners.yMin; i <= corners.yMax; i++) {
+            for (let j = corners.xMin; j <= corners.xMax; j++) {
                 const hash = "" + j + i;
                 entity.transform.addHashCoords(hash);
                 this.pushHash(hash, entity.id);
