@@ -14,8 +14,8 @@ export class EntityFactory extends ScratchSceneScript {
         this._entityHandler = this.container.requireType(EntityHandler);
     }
 
-    instantiate<Type extends ScratchEntity>(entity: new(...args: Array<any>) => Type): Type {
-        return this._entityHandler.addEntity(new entity(uuidv4(), this.container));
+    instantiate<Type extends ScratchEntity>(entity: new(...args: Array<any>) => Type, layer?: string): Type {
+        return this._entityHandler.addEntity(new entity(uuidv4(), this.container), layer);
     }
 
     dispose(): void {
