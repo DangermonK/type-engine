@@ -1,7 +1,7 @@
-import { ObjectMap } from "./ObjectMap";
 import { Scriptable } from "./Scriptable.abstract";
 import { IContainer } from "./IContainer";
 import { IDisposable } from "./IDisposable";
+import { ObjectMap } from "../../scratch-engine/utils/ObjectMap";
 
 export class Container<Type extends Scriptable<any>> implements IContainer<Type>, IDisposable {
 
@@ -58,11 +58,11 @@ export class Container<Type extends Scriptable<any>> implements IContainer<Type>
     }
 
     initialize(): void {
-        this._enabledScriptMap.all.forEach(script => script.initialize());
+        this._enabledScriptMap.all.forEach((script: Scriptable<any>) => script.initialize());
     }
 
     dispose(): void {
-        this._enabledScriptMap.all.forEach(script => script.dispose());
+        this._enabledScriptMap.all.forEach((script: Scriptable<any>) => script.dispose());
     }
 
 }
