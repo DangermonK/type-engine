@@ -24,6 +24,7 @@ export class Container<Type extends Scriptable<any>> implements IContainer<Type>
 
     addElement<Element extends Type>(element: Element): Element {
         this._enabledScriptMap.set(element);
+        element.initialize();
         return element;
     }
 
@@ -40,7 +41,6 @@ export class Container<Type extends Scriptable<any>> implements IContainer<Type>
     }
 
     initialize(): void {
-        this._enabledScriptMap.all.forEach((script: Scriptable<any>) => script.initialize());
     }
 
     dispose(): void {
