@@ -25,7 +25,7 @@ export class EntityLayer {
     }
 
     resolveHashes(): void {
-        this._entityMap.clear();
+        this._hashMap.clear();
         this._entityMap.forEach(entity => this._hashMap.pushElement(entity));
     }
 

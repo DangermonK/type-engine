@@ -40,6 +40,7 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
     }
 
     fixedUpdate(): void {
+        this._entityLayerMap.get('default')!.resolveHashes();
         this._entityLayerMap.get('default')!.entities.forEach(entity => entity.fixedUpdate());
     }
 
