@@ -8,7 +8,4 @@ export interface IContainer<Type extends Scriptable<any>> {
     hasElement<Element extends Type>(element: Element): boolean;
     hasType<Element extends Type>(element: new(...args: any) => Element): boolean;
 
-    disableElement<Element extends Type>(element: new(...args: any) => Element): void;
-    enableElement<Element extends Type>(element: new(...args: any) => Element): void;
-
 }
