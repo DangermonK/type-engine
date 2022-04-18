@@ -56,6 +56,8 @@ export class ColliderComponent extends ScratchComponent {
 
     override dispose() {
         super.dispose();
+
+        this.container.scene.getElement(PhysicsHandler).removeCollider(this);
     }
 
 }

@@ -10,19 +10,33 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
 
     private readonly _entityHandler: EntityHandler;
 
+    private readonly _layerMap: Map<string, Array<string>>;
     private readonly _layeredGridMap: Map<string, HashedGrid>;
 
     constructor(scene: ScratchScene) {
         super(scene);
         this._entityHandler = this.container.requireType(EntityHandler);
-        this._layeredGridMap = new Map<string, HashedGrid>();
 
+        this._layerMap = new Map<string, Array<string>>();
+        this._layeredGridMap = new Map<string, HashedGrid>();
     }
 
     pushCollider(collider: ColliderComponent): void {
+        if(!this._layerMap.has(collider.container.options.layer))
+            this._layerMap.set(collider.container.options.layer, new Array<string>());
+        this._layerMap.get(collider.container.options.layer)!.push(collider.container.id);
+
         if(!this._layeredGridMap.has(collider.container.options.layer))
             this._layeredGridMap.set(collider.container.options.layer, new HashedGrid(20));
-        this._entityHandler.addEntityFlag(collider.container, 'collider');
+    }
+
+    removeCollider(collider: ColliderComponent): void {
+        const layer = this._layerMap.get(collider.container.options.layer)!;
+        const index = layer.indexOf(collider.container.id);
+        if(index === -1)
+            return;
+
+        layer.splice(index, 1);
     }
 
     private resolveLayer(layer: string = 'default'): void {
@@ -34,6 +48,12 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
 
     getLayer(layer: string): HashedGrid | undefined {
         return this._layeredGridMap.get(layer);
+    }
+
+    checkCollision(): void {
+        this._entityHandler.getEntitiesByFlag('collider').forEach(entity => {
+
+        });
     }
 
     fixedUpdate(): void {
