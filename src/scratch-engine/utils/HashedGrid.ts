@@ -39,6 +39,16 @@ export class HashedGrid {
       return x + ":" + y;
     }
 
+    removeElement(collider: ColliderComponent): void {
+      collider.hashCoords.forEach(hash => {
+        const index = this._hashedGrid.get(hash)!.indexOf(collider.container.id);
+        if(index === -1)
+          return;
+
+        this._hashedGrid.get(hash)!.splice(index, 1);
+      });
+    }
+
     pushElement(collider: ColliderComponent): void {
         collider.clearHashCoords();
         const corners = this.getCorners(collider);

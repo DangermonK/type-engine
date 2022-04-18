@@ -16,7 +16,7 @@ export class EntityFactory extends ScratchSceneScript {
     }
 
     instantiate<Type extends ScratchEntity>(entity: new(...args: Array<any>) => Type,
-                                            options: IScratchEntityOptions = { layer: 'default', flags: {} }): Type {
+                                            options: IScratchEntityOptions = { layer: 'default' }): Type {
         return this._entityHandler.addEntity(new entity(uuidv4(), this.container, options));
     }
 

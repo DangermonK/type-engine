@@ -37,23 +37,19 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
             return;
 
         layer.splice(index, 1);
+
+        this._layeredGridMap.get(collider.container.options.layer)!.removeElement(collider);
     }
 
     private resolveLayer(layer: string = 'default'): void {
         this._layeredGridMap.get(layer)!.clear();
-        this._entityHandler.getEntitiesByFlag(layer).forEach(entity => {
+        this._entityHandler.getEntitiesOfLayer(layer).forEach(entity => {
             this._layeredGridMap.get(layer)!.pushElement(entity.getElement(ColliderComponent));
         });
     }
 
     getLayer(layer: string): HashedGrid | undefined {
         return this._layeredGridMap.get(layer);
-    }
-
-    checkCollision(): void {
-        this._entityHandler.getEntitiesByFlag('collider').forEach(entity => {
-
-        });
     }
 
     fixedUpdate(): void {
