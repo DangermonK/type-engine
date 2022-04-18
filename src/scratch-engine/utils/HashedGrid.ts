@@ -1,4 +1,4 @@
-import { ScratchEntity } from "../core/ScratchEntity.abstract";
+import { ColliderComponent } from "../components/ColliderComponent";
 
 
 export class HashedGrid {
@@ -26,12 +26,12 @@ export class HashedGrid {
         this._hashedGrid.get(hash)?.push(id);
     }
 
-    private getCorners(entity: ScratchEntity): any {
+    private getCorners(collider: ColliderComponent): any {
         return {
-            xMin: Math.floor(entity.transform.bounds.x / this._cellSize),
-            yMin: Math.floor(entity.transform.bounds.y / this._cellSize),
-            xMax: Math.floor((entity.transform.bounds.x + entity.transform.bounds.w) / this._cellSize),
-            yMax: Math.floor((entity.transform.bounds.y + entity.transform.bounds.h) / this._cellSize)
+            xMin: Math.floor(collider.bounds.x / this._cellSize),
+            yMin: Math.floor(collider.bounds.y / this._cellSize),
+            xMax: Math.floor((collider.bounds.x + collider.bounds.w) / this._cellSize),
+            yMax: Math.floor((collider.bounds.y + collider.bounds.h) / this._cellSize)
         }
     }
 
@@ -39,15 +39,15 @@ export class HashedGrid {
       return x + ":" + y;
     }
 
-    pushElement(entity: ScratchEntity): void {
-        entity.transform.clearHashCoords();
-        const corners = this.getCorners(entity);
+    pushElement(collider: ColliderComponent): void {
+        collider.clearHashCoords();
+        const corners = this.getCorners(collider);
 
         for(let i = corners.yMin; i <= corners.yMax; i++) {
             for (let j = corners.xMin; j <= corners.xMax; j++) {
                 const hash = this.buildHash(j, i);
-                entity.transform.addHashCoords(hash);
-                this.pushHash(hash, entity.id);
+                collider.addHashCoords(hash);
+                this.pushHash(hash, collider.container.id);
             }
         }
     }
@@ -67,8 +67,8 @@ export class HashedGrid {
         return this._hashedGrid.get(hash) || [];
     }
 
-    getElementsFromBounds(entity: ScratchEntity): Array<string> {
-        const corners = this.getCorners(entity);
+    getElementsFromBounds(collider: ColliderComponent): Array<string> {
+        const corners = this.getCorners(collider);
 
         let arr: Array<string> = new Array<string>();
         for(let i = corners.yMin; i < corners.yMax; i++) {

@@ -17,6 +17,14 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
         this._flagMap = new Map<string, Array<string>>();
     }
 
+    addEntityFlag(entity: ScratchEntity, flag: string): void {
+        entity.options.flags[flag] = true;
+        if(!this._flagMap.has(flag))
+            this._flagMap.set(flag, new Array<string>());
+
+        this._flagMap.get(flag)!.push(entity.id);
+    }
+
     addEntity<Type extends ScratchEntity>(entity: Type): Type {
         this._entityMap.set(entity.id, entity);
 
