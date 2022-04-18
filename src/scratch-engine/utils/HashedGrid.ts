@@ -71,8 +71,8 @@ export class HashedGrid {
         const corners = this.getCorners(collider);
 
         let arr: Array<string> = new Array<string>();
-        for(let i = corners.yMin; i < corners.yMax; i++) {
-            for (let j = corners.xMin; j < corners.xMax; j++) {
+        for(let i = corners.yMin; i <= corners.yMax; i++) {
+            for (let j = corners.xMin; j <= corners.xMax; j++) {
                 const hash = this.buildHash(j, i);
                 arr = arr.concat(this._hashedGrid.get(hash) || []);
             }
