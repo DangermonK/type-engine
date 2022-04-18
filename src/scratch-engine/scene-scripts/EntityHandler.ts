@@ -46,11 +46,7 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
         return entities;
     }
 
-    getEntityById(id: string): ScratchEntity | undefined {
-        return this._entityMap.get(id);
-    }
-
-    getEntities(...ids: Array<string>): Array<ScratchEntity> {
+    getEntities(ids: Array<string>): Array<ScratchEntity> {
         const arr: Array<ScratchEntity> = new Array<ScratchEntity>();
         for(let i = 0; i < ids.length; i++) {
             arr.push(this._entityMap.get(ids[i])!);
