@@ -29,6 +29,7 @@ export abstract class ScratchScene extends Container<ScratchSceneScript> impleme
 
     start(): void {
         this._entityHandler.start();
+        this._physicsHandler.start();
     }
 
     stop(): void {

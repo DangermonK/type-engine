@@ -16,9 +16,12 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
         super(scene);
         this._entityHandler = this.container.requireType(EntityHandler);
         this._layeredGridMap = new Map<string, HashedGrid>();
+
     }
 
     pushCollider(collider: ColliderComponent): void {
+        if(!this._layeredGridMap.has(collider.container.options.layer))
+            this._layeredGridMap.set(collider.container.options.layer, new HashedGrid(20));
         this._entityHandler.addEntityFlag(collider.container, 'collider');
     }
 

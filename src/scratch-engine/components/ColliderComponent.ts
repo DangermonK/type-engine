@@ -48,13 +48,13 @@ export class ColliderComponent extends ScratchComponent {
         return this._hashCoords;
     }
 
-    initialize() {
+    override initialize() {
         super.initialize();
 
         this.container.scene.getElement(PhysicsHandler).pushCollider(this);
     }
 
-    dispose() {
+    override dispose() {
         super.dispose();
     }
 
