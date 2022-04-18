@@ -20,11 +20,16 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
     addEntity<Type extends ScratchEntity>(entity: Type): Type {
         this._entityMap.set(entity.id, entity);
 
-        Object.keys(entity.options).forEach(option => {
-            if(!this._flagMap.has(option))
-                this._flagMap.set(option, new Array<string>());
+        if(!this._flagMap.has(entity.options.layer))
+            this._flagMap.set(entity.options.layer, new Array<string>());
 
-            this._flagMap.get(option)!.push(entity.id);
+        this._flagMap.get(entity.options.layer)!.push(entity.id);
+
+        Object.keys(entity.options.flags).forEach(flag => {
+            if(!this._flagMap.has(flag))
+                this._flagMap.set(flag, new Array<string>());
+
+            this._flagMap.get(flag)!.push(entity.id);
         });
 
         return entity;
@@ -33,12 +38,16 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
     removeEntity(entity: ScratchEntity): void {
         this._entityMap.delete(entity.id);
 
-        Object.keys(entity.options).forEach(option => {
-            const index = this._flagMap.get(option)!.indexOf(entity.id);
+        const index = this._flagMap.get(entity.options.layer)!.indexOf(entity.id);
+        if(index !== -1)
+            this._flagMap.get(entity.options.layer)!.splice(index, 1);
+
+        Object.keys(entity.options.flags).forEach(flag => {
+            const index = this._flagMap.get(flag)!.indexOf(entity.id);
             if(index === null)
                 return;
 
-            this._flagMap.get(option)!.splice(index, 1);
+            this._flagMap.get(flag)!.splice(index, 1);
         });
     }
 

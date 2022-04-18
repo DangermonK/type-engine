@@ -3,7 +3,9 @@
 export interface IScratchEntityOptions {
 
     layer: string,
-    static?: boolean,
-    collider?: boolean,
+
+    flags: {
+        [key: string]: boolean
+    }
 
 }
