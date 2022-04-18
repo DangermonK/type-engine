@@ -48,6 +48,13 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
         });
     }
 
+    private checkBoundsIntersection(colliderA: ColliderComponent, colliderB: ColliderComponent): boolean {
+        return colliderA.bounds.x < colliderB.bounds.x + colliderB.bounds.w &&
+               colliderA.bounds.y < colliderB.bounds.y + colliderB.bounds.h &&
+               colliderA.bounds.x > colliderB.bounds.x - colliderA.bounds.w &&
+               colliderA.bounds.y > colliderB.bounds.y - colliderA.bounds.w;
+    }
+
     getLayer(layer: string): HashedGrid | undefined {
         return this._layeredGridMap.get(layer);
     }
