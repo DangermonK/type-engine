@@ -24,6 +24,7 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
     }
 
     addEntity<Type extends ScratchEntity>(entity: Type): Type {
+        entity.initialize();
         this._entityMap.set(entity.id, entity);
 
         if(!this._flagMap.has(entity.options.layer))
@@ -42,6 +43,7 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
     }
 
     removeEntity(entity: ScratchEntity): void {
+        entity.dispose();
         this._entityMap.delete(entity.id);
 
         const index = this._flagMap.get(entity.options.layer)!.indexOf(entity.id);
