@@ -5,6 +5,7 @@ import { Container } from "../../core/container/Container";
 import { IRunnable } from "../../core/container/IRunnable";
 import { ScratchSceneScript } from "./ScratchSceneScript.abstract";
 import { PhysicsHandler } from "../scene-scripts/PhysicsHandler";
+import { ScratchEntity } from "./ScratchEntity.abstract";
 
 
 export abstract class ScratchScene extends Container<ScratchSceneScript> implements IRunnable {
@@ -19,7 +20,6 @@ export abstract class ScratchScene extends Container<ScratchSceneScript> impleme
         this._entityFactory = this.requireType(EntityFactory);
         this._entityHandler = this.requireType(EntityHandler);
         this._physicsHandler = this.requireType(PhysicsHandler);
-
     }
 
     fixedUpdate(): void {

@@ -7,30 +7,64 @@ import { EntityLayer } from "../utils/EntityLayer";
 
 export class EntityHandler extends ScratchSceneScript implements IRunnable {
 
-    private readonly _entityLayerMap: Map<string, EntityLayer>;
+    private readonly _flagMap: Map<string, Array<string>>;
+    private readonly _entityMap: Map<string, ScratchEntity>;
 
     constructor(scene: ScratchScene) {
         super(scene);
 
-        this._entityLayerMap = new Map<string, EntityLayer>();
-        this._entityLayerMap.set('default', new EntityLayer());
+        this._entityMap = new Map<string, ScratchEntity>();
+        this._flagMap = new Map<string, Array<string>>();
     }
 
-    getLayer(layer: string): EntityLayer {
-        return this._entityLayerMap.get(layer)!;
-    }
+    addEntity<Type extends ScratchEntity>(entity: Type): Type {
+        this._entityMap.set(entity.id, entity);
 
-    addEntity<Type extends ScratchEntity>(entity: Type, layer: string = 'default'): Type {
-        if(!this._entityLayerMap.has(layer))
-            this._entityLayerMap.set(layer, new EntityLayer());
+        Object.keys(entity.options).forEach(option => {
+            if(!this._flagMap.has(option))
+                this._flagMap.set(option, new Array<string>());
 
-        this._entityLayerMap.get(layer)!.addEntity(entity);
+            this._flagMap.get(option)!.push(entity.id);
+        });
 
         return entity;
     }
 
+    removeEntity(entity: ScratchEntity): void {
+        this._entityMap.delete(entity.id);
+
+        Object.keys(entity.options).forEach(option => {
+            const index = this._flagMap.get(option)!.indexOf(entity.id);
+            if(index === null)
+                return;
+
+            this._flagMap.get(option)!.splice(index, 1);
+        });
+    }
+
+    getEntitiesByFlag(flag: string): Array<ScratchEntity> {
+        const flaggedEntities = this._flagMap.get(flag) || [];
+
+        const entities: Array<ScratchEntity> = new Array<ScratchEntity>();
+        for(let i = 0; i < flaggedEntities.length; i++) {
+            entities.push(this._entityMap.get(flaggedEntities[i])!);
+        }
+        return entities;
+    }
+
+    getEntityById(id: string): ScratchEntity | undefined {
+        return this._entityMap.get(id);
+    }
+
+    getEntitiesOfType<Type extends ScratchEntity>(type: new() => Type): Array<Type> {
+        return this.entities.filter(entity => entity instanceof type) as Array<Type>;
+    }
+
+    get entities(): Array<ScratchEntity> {
+        return [...this._entityMap.values()];
+    }
+
     start(): void {
-        this._entityLayerMap.get('static')?.resolveHashes();
     }
 
     stop(): void {
@@ -40,8 +74,7 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
     }
 
     fixedUpdate(): void {
-        this._entityLayerMap.get('default')!.resolveHashes();
-        this._entityLayerMap.get('default')!.entities.forEach(entity => entity.fixedUpdate());
+
     }
 
     dispose(): void {
