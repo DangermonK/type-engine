@@ -27,7 +27,7 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
         this._layerMap.get(collider.container.options.layer)!.push(collider.container.id);
 
         if(!this._layeredGridMap.has(collider.container.options.layer))
-            this._layeredGridMap.set(collider.container.options.layer, new HashedGrid(20));
+            this._layeredGridMap.set(collider.container.options.layer, new HashedGrid(this.container.settings.hashGridCellSize));
     }
 
     removeCollider(collider: ColliderComponent): void {

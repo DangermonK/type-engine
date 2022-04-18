@@ -12,7 +12,6 @@ export class Transform {
         this.position = new Vector2();
         this.rotation = 0;
         this.size = new Vector2(1, 1);
-
     }
 
     translate(x: number, y: number): void {
