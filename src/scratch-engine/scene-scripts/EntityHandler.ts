@@ -2,8 +2,6 @@ import { ScratchSceneScript } from "../core/ScratchSceneScript.abstract";
 import { ScratchScene } from "../core/ScratchScene.abstract";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
 import { IRunnable } from "../../core/container/IRunnable";
-import { HashedGrid } from "../utils/HashedGrid";
-import { EntityLayer } from "../utils/EntityLayer";
 
 export class EntityHandler extends ScratchSceneScript implements IRunnable {
 
@@ -73,7 +71,7 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
         return this._entityMap.get(id);
     }
 
-    getEntitiesOfType<Type extends ScratchEntity>(type: new() => Type): Array<Type> {
+    getEntitiesOfType<Type extends ScratchEntity>(type: new(...args: Array<any>) => Type): Array<Type> {
         return this.entities.filter(entity => entity instanceof type) as Array<Type>;
     }
 

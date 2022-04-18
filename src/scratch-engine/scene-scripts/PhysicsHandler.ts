@@ -32,6 +32,10 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
         });
     }
 
+    getLayer(layer: string): HashedGrid | undefined {
+        return this._layeredGridMap.get(layer);
+    }
+
     fixedUpdate(): void {
         this.resolveLayer('default');
     }
