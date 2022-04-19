@@ -39,7 +39,8 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
 
         layer.splice(index, 1);
 
-        this._layeredGridMap.get(collider.container.options.layer)!.removeElement(collider);
+        // TODO: Only use following line if definitely needed due to performance decrease
+        // this._layeredGridMap.get(collider.container.options.layer)!.removeElement(collider);
     }
 
     private resolveLayer(layer: string = 'default'): void {
