@@ -49,15 +49,19 @@ export class ColliderComponent extends ScratchComponent {
     }
 
     override initialize() {
-        super.initialize();
-
         this.container.scene.getElement(PhysicsHandler).pushCollider(this);
     }
 
     override dispose() {
-        super.dispose();
-
         this.container.scene.getElement(PhysicsHandler).removeCollider(this);
     }
+
+    fixedUpdate(): void {}
+
+    start(): void {}
+
+    stop(): void {}
+
+    update(): void {}
 
 }
