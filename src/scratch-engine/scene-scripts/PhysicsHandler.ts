@@ -51,7 +51,7 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
 
     private resolveLayer(layer: string = 'default'): void {
         this._layeredGridMap.get(layer)!.clear();
-        this._entityHandler.getEntitiesOfLayer(layer).forEach(entity => {
+        this._entityHandler.getEntities(this._layerMap.get(layer)!).forEach(entity => {
             this._layeredGridMap.get(layer)!.pushElement(entity.getElement(ColliderComponent));
         });
     }
