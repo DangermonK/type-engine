@@ -4,6 +4,7 @@ import { ScratchScene } from "../core/ScratchScene.abstract";
 import { EntityHandler } from "./EntityHandler";
 import { HashedGrid } from "../utils/HashedGrid";
 import { ColliderComponent } from "../components/ColliderComponent";
+import { IBounds } from "../utils/IBounds";
 
 
 export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
@@ -48,11 +49,11 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
         });
     }
 
-    private checkBoundsIntersection(colliderA: ColliderComponent, colliderB: ColliderComponent): boolean {
-        return colliderA.bounds.x < colliderB.bounds.x + colliderB.bounds.w &&
-               colliderA.bounds.y < colliderB.bounds.y + colliderB.bounds.h &&
-               colliderA.bounds.x > colliderB.bounds.x - colliderA.bounds.w &&
-               colliderA.bounds.y > colliderB.bounds.y - colliderA.bounds.w;
+    private checkBoundsIntersection(boundsA: IBounds, boundsB: IBounds): boolean {
+        return boundsA.x < boundsB.x + boundsB.w &&
+               boundsA.y < boundsB.y + boundsB.h &&
+               boundsA.x > boundsB.x - boundsA.w &&
+               boundsA.y > boundsB.y - boundsA.w;
     }
 
     getLayer(layer: string): HashedGrid | undefined {

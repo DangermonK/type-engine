@@ -2,6 +2,7 @@ import { ScratchComponent } from "../core/ScratchComponent.abstract";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
 import { PhysicsHandler } from "../scene-scripts/PhysicsHandler";
 import { Vector2 } from "../utils/Vector2";
+import { IBounds } from "../utils/IBounds";
 
 
 export class ColliderComponent extends ScratchComponent {
@@ -27,7 +28,7 @@ export class ColliderComponent extends ScratchComponent {
         this._boundsOffset.y = y;
     }
 
-    get bounds(): any {
+    get bounds(): IBounds {
         return {
             x: this.container.transform.position.x + this._boundsOffset.x,
             y: this.container.transform.position.y + this._boundsOffset.y,
