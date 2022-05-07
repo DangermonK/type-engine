@@ -49,6 +49,26 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
         });
     }
 
+    private resolveCollisionsOnLayer(layer: string = 'default'): void {
+        const elements = this._entityHandler.getEntities(this._layerMap.get(layer)!);
+        const compareLayers = this.container.settings.collisionRules.get(layer)!;
+
+        const collisions: Array<any> = new Array<any>();
+
+        for(const element of elements) {
+            const collider = element.getElement(ColliderComponent);
+            for(const compareLayer of compareLayers) {
+                const comparants = this._entityHandler.getEntities(
+                        this._layeredGridMap.get(compareLayer)!.getElementsFromHashes(collider.hashCoords));
+                for(const comparant of comparants) {
+                    if(this.checkBoundsIntersection(collider.bounds, comparant.getElement(ColliderComponent).bounds)) {
+                        // TODO: implement collision detection for all shapes
+                    }
+                }
+            }
+        }
+    }
+
     private resolveLayer(layer: string = 'default'): void {
         this._layeredGridMap.get(layer)!.clear();
         this._entityHandler.getEntities(this._layerMap.get(layer)!).forEach(entity => {
