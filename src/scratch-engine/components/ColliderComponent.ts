@@ -18,7 +18,6 @@ export class ColliderComponent extends ScratchComponent {
 
     constructor(entity: ScratchEntity) {
         super(entity);
-
         this._boundsOffset = new Vector2();
         this._bounds = new Vector2(1, 1);
 
