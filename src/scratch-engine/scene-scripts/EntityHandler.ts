@@ -63,9 +63,11 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
     }
 
     start(): void {
+      this.getEntitiesOfLayer('default').forEach(entity => entity.start());
     }
 
     stop(): void {
+      this.getEntitiesOfLayer('default').forEach(entity => entity.stop());
     }
 
     update(): void {
@@ -76,9 +78,11 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
     }
 
     dispose(): void {
+      this.getEntitiesOfLayer('default').forEach(entity => entity.dispose());
     }
 
     initialize(): void {
+      this.getEntitiesOfLayer('default').forEach(entity => entity.initialize());
     }
 
 }
