@@ -5,6 +5,6 @@ export interface IScratchSceneSettings {
 
     hashGridCellSize: number;
 
-    collisionRules: Map<string, string>;
+    collisionRules: Map<string, string[]>;
 
 }

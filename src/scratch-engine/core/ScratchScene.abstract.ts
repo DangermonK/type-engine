@@ -1,14 +1,13 @@
 
 import { EntityFactory } from "../scene-scripts/EntityFactory";
 import { EntityHandler } from "../scene-scripts/EntityHandler";
-import { Container } from "../../core/container/Container";
 import { IRunnable } from "../../core/container/IRunnable";
 import { ScratchSceneScript } from "./ScratchSceneScript.abstract";
 import { PhysicsHandler } from "../scene-scripts/PhysicsHandler";
 import { IScratchSceneSettings } from "./IScratchSceneSettings";
+import { Processor } from "../../core/container/Processor";
 
-
-export abstract class ScratchScene extends Container<ScratchSceneScript> implements IRunnable {
+export abstract class ScratchScene extends Processor<ScratchSceneScript> implements IRunnable {
 
     private readonly _entityFactory: EntityFactory;
     private readonly _entityHandler: EntityHandler;
@@ -28,24 +27,6 @@ export abstract class ScratchScene extends Container<ScratchSceneScript> impleme
 
     get settings(): IScratchSceneSettings {
         return this._settings;
-    }
-
-    fixedUpdate(): void {
-        this._entityHandler.fixedUpdate();
-        this._physicsHandler.fixedUpdate();
-    }
-
-    start(): void {
-        this._entityHandler.start();
-        this._physicsHandler.start();
-    }
-
-    stop(): void {
-        this._entityHandler.stop();
-    }
-
-    update(): void {
-        this._entityHandler.update();
     }
 
 }

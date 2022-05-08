@@ -8,21 +8,4 @@ export abstract class ScratchComponent extends Process<ScratchEntity> {
         super(entity);
     }
 
-    dispose(): void {
-    }
-
-    fixedUpdate(): void {
-    }
-
-    initialize(): void {
-    }
-
-    start(): void {
-    }
-
-    stop(): void {
-    }
-
-    update(): void {
-    }
 }

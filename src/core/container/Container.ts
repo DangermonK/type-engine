@@ -5,14 +5,17 @@ import { ObjectMap } from "../../scratch-engine/utils/ObjectMap";
 
 export class Container<Type extends Scriptable<any>> implements IContainer<Type>, IDisposable {
 
-    private readonly _enabledScriptMap: ObjectMap<Type>;
+    private readonly _scriptMap: ObjectMap<Type>;
+
+    private readonly _listenerMap: Map<string, Array<(data?: any) => void>>;
 
     constructor() {
-        this._enabledScriptMap = new ObjectMap<Type>();
+        this._scriptMap = new ObjectMap<Type>();
+        this._listenerMap = new Map<string, Array<(data?: any) => void>>();
     }
 
     protected get scripts(): Array<Type> {
-        return this._enabledScriptMap.all;
+        return this._scriptMap.all;
     }
 
     requireType<Element extends Type>(element: { new(...args: any): Element }): Element {
@@ -23,28 +26,45 @@ export class Container<Type extends Scriptable<any>> implements IContainer<Type>
     }
 
     addElement<Element extends Type>(element: Element): Element {
-        this._enabledScriptMap.set(element);
+        this._scriptMap.set(element);
         element.initialize();
         return element;
     }
 
     getElement<Element extends Type>(element: { new(...args: any): Element }): Element {
-        return this._enabledScriptMap.get(element);
+        return this._scriptMap.get(element);
     }
 
     hasType<Element extends Type>(element: { new(...args: any): Element }): boolean {
-        return this._enabledScriptMap.hasType(element);
+        return this._scriptMap.hasType(element);
     }
 
     hasElement<Element extends Type>(element: Element ): boolean {
-        return this._enabledScriptMap.hasElement(element);
+        return this._scriptMap.hasElement(element);
     }
 
     initialize(): void {
     }
 
     dispose(): void {
-        this._enabledScriptMap.all.forEach((script: Scriptable<any>) => script.dispose());
+        this._scriptMap.all.forEach((script: Scriptable<any>) => script.dispose());
+    }
+
+    addListener(method: string): void {
+        for(const script of this.scripts) {
+            if(typeof (script as any)[method] === 'function') {
+                if(!this._listenerMap.has(method))
+                    this._listenerMap.set(method, new Array<(data?: any) => void>());
+
+                this._listenerMap.get(method)!.push((script as any)[method].bind(script));
+            }
+        }
+    }
+
+    emit(method: string, data?: any): void {
+        for(const func of this._listenerMap.get(method) || []) {
+            func(data);
+        }
     }
 
 }

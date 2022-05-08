@@ -6,22 +6,28 @@ export class Processor<Type extends Process<any>> extends Container<Type> implem
 
     constructor() {
         super();
+
     }
 
     fixedUpdate(): void {
-        this.scripts.forEach(script => script.fixedUpdate());
+        this.emit('fixedUpdate');
     }
 
     start(): void {
-        this.scripts.forEach(script => script.start());
+        this.addListener('start');
+        this.addListener('stop');
+        this.addListener('fixedUpdate');
+        this.addListener('update');
+
+        this.emit('start');
     }
 
     stop(): void {
-        this.scripts.forEach(script => script.stop());
+        this.emit('stop');
     }
 
     update(): void {
-        this.scripts.forEach(script => script.update());
+        this.emit('update');
     }
 
 }

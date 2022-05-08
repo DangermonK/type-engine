@@ -26,6 +26,4 @@ export class EntityFactory extends ScratchSceneScript {
     initialize(): void {
     }
 
-
-
 }
