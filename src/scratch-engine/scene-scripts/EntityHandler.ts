@@ -1,9 +1,8 @@
 import { ScratchSceneScript } from "../core/ScratchSceneScript.abstract";
 import { ScratchScene } from "../core/ScratchScene.abstract";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
-import { IRunnable } from "../../core/container/IRunnable";
 
-export class EntityHandler extends ScratchSceneScript implements IRunnable {
+export class EntityHandler extends ScratchSceneScript {
 
     private readonly _layerMap: Map<string, Array<string>>;
     private readonly _entityMap: Map<string, ScratchEntity>;
@@ -62,27 +61,10 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
         return [...this._entityMap.values()];
     }
 
-    start(): void {
-        this.getEntitiesOfLayer('default').forEach(entity => entity.start());
-    }
-
-    stop(): void {
-        this.getEntitiesOfLayer('default').forEach(entity => entity.stop());
-    }
-
-    update(): void {
-    }
-
-    fixedUpdate(): void {
-        this.getEntitiesOfLayer('default').forEach(entity => entity.fixedUpdate());
-    }
-
     dispose(): void {
-        this.getEntitiesOfLayer('default').forEach(entity => entity.dispose());
     }
 
     initialize(): void {
-        this.getEntitiesOfLayer('default').forEach(entity => entity.initialize());
     }
 
 }

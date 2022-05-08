@@ -7,7 +7,7 @@ import { ColliderComponent } from "../components/ColliderComponent";
 import { IBounds } from "../utils/IBounds";
 
 
-export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
+export class PhysicsHandler extends ScratchSceneScript {
 
     private readonly _entityHandler: EntityHandler;
 
@@ -115,12 +115,6 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
     start(): void {
         this.resolveLayer('static');
         this.resolveLayer('nother');
-    }
-
-    stop(): void {
-    }
-
-    update(): void {
     }
 
     dispose(): void {
