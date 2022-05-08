@@ -12,6 +12,10 @@ export class ColliderComponent extends ScratchComponent {
 
     private readonly _hashCoords: Array<string>;
 
+    private _isTrigger!: boolean;
+    private _intersectionEnter!: string;
+    private _intersectionExit!: string;
+
     constructor(entity: ScratchEntity) {
         super(entity);
 
@@ -19,6 +23,8 @@ export class ColliderComponent extends ScratchComponent {
         this._bounds = new Vector2(1, 1);
 
         this._hashCoords = new Array<string>();
+
+        this.setTrigger(false);
     }
 
     setBounds(x: number, y: number, w: number, h: number): void {
@@ -35,6 +41,22 @@ export class ColliderComponent extends ScratchComponent {
             w: this._bounds.x,
             h: this._bounds.y
         }
+    }
+
+    setTrigger(trigger: boolean): void {
+        this._isTrigger = trigger;
+
+        if(trigger) {
+            this._intersectionEnter = 'onTriggerEnter';
+            this._intersectionExit = 'onTriggerExit';
+        } else {
+            this._intersectionEnter = 'onCollisionEnter';
+            this._intersectionExit = 'onCollisionExit';
+        }
+    }
+
+    get trigger(): boolean {
+        return this._isTrigger;
     }
 
     clearHashCoords(): void {
@@ -57,9 +79,22 @@ export class ColliderComponent extends ScratchComponent {
         this.container.scene.getElement(PhysicsHandler).removeCollider(this);
     }
 
+    emitCollisionEnter(collider: ColliderComponent): void {
+        this.container.emit(collider._intersectionEnter, collider);
+    }
+
+    emitCollisionExit(collider: ColliderComponent): void {
+        this.container.emit(collider._intersectionExit, collider);
+    }
+
     fixedUpdate(): void {}
 
-    start(): void {}
+    start(): void {
+        this.container.addListener('onCollisionEnter');
+        this.container.addListener('onCollisionExit');
+        this.container.addListener('onTriggerEnter');
+        this.container.addListener('onTriggerExit');
+    }
 
     stop(): void {}
 
