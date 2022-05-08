@@ -49,24 +49,44 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
         });
     }
 
+    // TODO: refactor
+    collisions: Map<string, any> = new Map<string, any>();
     private resolveCollisionsOnLayer(layer: string = 'default'): void {
         const elements = this._entityHandler.getEntities(this._layerMap.get(layer)!);
         const compareLayers = this.container.settings.collisionRules.get(layer)!;
 
-        const collisions: Array<any> = new Array<any>();
-
+        const current = new Map<string, any>(this.collisions);
         for(const element of elements) {
             const collider = element.getElement(ColliderComponent);
             for(const compareLayer of compareLayers) {
                 const comparants = this._entityHandler.getEntities(
                         this._layeredGridMap.get(compareLayer)!.getElementsFromHashes(collider.hashCoords));
                 for(const comparant of comparants) {
+                  // TODO: implement collision detection for all shapes
                     if(this.checkBoundsIntersection(collider.bounds, comparant.getElement(ColliderComponent).bounds)) {
-                        // TODO: implement collision detection for all shapes
+                      // TODO: refactor
+                        if(!this.collisions.has(element.id + comparant.id)) {
+                            this.collisions.set(element.id + comparant.id, {
+                                entity: collider,
+                                collider: comparant.getElement(ColliderComponent)
+                            });
+                            current.set(element.id + comparant.id, "new");
+                        } else
+                            current.set(element.id + comparant.id, "old");
                     }
                 }
             }
         }
+
+        // TODO: refactor
+        current.forEach((coll, id) => {
+            if(coll === 'new') {
+                this.collisions.get(id).entity.emitCollisionEnter(this.collisions.get(id).collider);
+            } else if(coll !== 'old') {
+                this.collisions.get(id).entity.emitCollisionExit(this.collisions.get(id).collider);
+                this.collisions.delete(id);
+            }
+        });
     }
 
     private resolveLayer(layer: string = 'default'): void {
@@ -89,6 +109,7 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
 
     fixedUpdate(): void {
         this.resolveLayer('default');
+        this.resolveCollisionsOnLayer();
     }
 
     start(): void {
