@@ -1,7 +1,7 @@
 import { ScratchScene } from "./ScratchScene.abstract";
 import { Processor } from "../../core/container/Processor";
 import { ScratchComponent } from "./ScratchComponent.abstract";
-import { Transform } from "../utils/Transform";
+import { TransformComponent } from "../components/TransformComponent";
 import { IScratchEntityOptions } from "./IScratchEntityOptions";
 
 
@@ -12,7 +12,7 @@ export abstract class ScratchEntity extends Processor<ScratchComponent> {
 
     private readonly _options: IScratchEntityOptions;
 
-    public readonly transform: Transform;
+    public readonly transform: TransformComponent;
 
     protected constructor(id: string, scene: ScratchScene, options: IScratchEntityOptions) {
         super();
@@ -22,7 +22,7 @@ export abstract class ScratchEntity extends Processor<ScratchComponent> {
 
         this._options = options;
 
-        this.transform = new Transform();
+        this.transform = this.requireType(TransformComponent);
     }
 
     get options(): IScratchEntityOptions {

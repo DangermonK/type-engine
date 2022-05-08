@@ -1,14 +1,17 @@
 
+import { ScratchComponent } from "../core/ScratchComponent.abstract";
+import { ScratchEntity } from "../core/ScratchEntity.abstract";
 import { Vector2 } from "../utils/Vector2";
 
 
-export class Transform {
+export class TransformComponent extends ScratchComponent {
 
     public readonly position: Vector2;
     public rotation: number;
     public readonly size: Vector2;
 
-    constructor() {
+    constructor(entity: ScratchEntity) {
+        super(entity);
         this.position = new Vector2();
         this.rotation = 0;
         this.size = new Vector2(1, 1);
@@ -26,6 +29,12 @@ export class Transform {
     scale(x: number, y: number): void {
         this.size.x += x;
         this.size.y += y;
+    }
+
+    initialize(): void {
+    }
+
+    dispose(): void {
     }
 
 }
