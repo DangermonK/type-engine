@@ -114,6 +114,7 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
 
     start(): void {
         this.resolveLayer('static');
+        this.resolveLayer('nother');
     }
 
     stop(): void {

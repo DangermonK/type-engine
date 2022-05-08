@@ -6,6 +6,7 @@ export class Processor<Type extends Process<any>> extends Container<Type> implem
 
     constructor() {
         super();
+
     }
 
     fixedUpdate(): void {
