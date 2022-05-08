@@ -52,8 +52,8 @@ export class PhysicsHandler extends ScratchSceneScript implements IRunnable {
     // TODO: refactor
     collisions: Map<string, any> = new Map<string, any>();
     private resolveCollisionsOnLayer(layer: string = 'default'): void {
-        const elements = this._entityHandler.getEntities(this._layerMap.get(layer)!);
-        const compareLayers = this.container.settings.collisionRules.get(layer)!;
+        const elements = this._entityHandler.getEntities(this._layerMap.get(layer) || []);
+        const compareLayers = this.container.settings.collisionRules.get(layer) || [];
 
         const current = new Map<string, any>(this.collisions);
         for(const element of elements) {
