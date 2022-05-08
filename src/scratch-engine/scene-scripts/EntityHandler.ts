@@ -63,26 +63,26 @@ export class EntityHandler extends ScratchSceneScript implements IRunnable {
     }
 
     start(): void {
-      this.getEntitiesOfLayer('default').forEach(entity => entity.start());
+        this.getEntitiesOfLayer('default').forEach(entity => entity.start());
     }
 
     stop(): void {
-      this.getEntitiesOfLayer('default').forEach(entity => entity.stop());
+        this.getEntitiesOfLayer('default').forEach(entity => entity.stop());
     }
 
     update(): void {
     }
 
     fixedUpdate(): void {
-      this.getEntitiesOfLayer('default').forEach(entity => entity.fixedUpdate());
+        this.getEntitiesOfLayer('default').forEach(entity => entity.fixedUpdate());
     }
 
     dispose(): void {
-      this.getEntitiesOfLayer('default').forEach(entity => entity.dispose());
+        this.getEntitiesOfLayer('default').forEach(entity => entity.dispose());
     }
 
     initialize(): void {
-      this.getEntitiesOfLayer('default').forEach(entity => entity.initialize());
+        this.getEntitiesOfLayer('default').forEach(entity => entity.initialize());
     }
 
 }
