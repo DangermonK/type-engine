@@ -1,5 +1,4 @@
 import { ScratchSceneScript } from "../core/ScratchSceneScript.abstract";
-import { IRunnable } from "../../core/container/IRunnable";
 import { ScratchScene } from "../core/ScratchScene.abstract";
 import { EntityHandler } from "./EntityHandler";
 import { HashedGrid } from "../utils/HashedGrid";
