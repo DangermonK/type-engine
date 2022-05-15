@@ -13,6 +13,8 @@ export class PhysicsHandler extends ScratchSceneScript {
     private readonly _layerMap: Map<string, Array<string>>;
     private readonly _layeredGridMap: Map<string, HashedGrid>;
 
+    private readonly _activeCollisions: Map<string, any> = new Map<string, any>();
+
     constructor(scene: ScratchScene) {
         super(scene);
         this._entityHandler = this.container.requireType(EntityHandler);
@@ -42,19 +44,17 @@ export class PhysicsHandler extends ScratchSceneScript {
         // this._layeredGridMap.get(collider.container.options.layer)!.removeElement(collider);
     }
 
-    private resolveAllLayers(): void {
+    resolveAllLayers(): void {
         for(const layer of [...this._layeredGridMap.keys()]) {
             this.resolveHashLayer(layer);
         }
     }
 
-    // TODO: refactor
-    collisions: Map<string, any> = new Map<string, any>();
     resolveCollisionsOnLayer(layer: string = 'default'): void {
         const elements = this._entityHandler.getEntities(this._layerMap.get(layer) || []);
         const compareLayers = this.container.settings.collisionRules.get(layer) || [];
 
-        const current = new Map<string, any>(this.collisions);
+        const current = new Map<string, any>(this._activeCollisions);
         for(const element of elements) {
             const collider = element.getElement(ColliderComponent);
             for(const compareLayer of compareLayers) {
@@ -64,8 +64,8 @@ export class PhysicsHandler extends ScratchSceneScript {
                   // TODO: implement collision detection for all shapes
                     if(PhysicsHandler.checkBoundsIntersection(collider.bounds, comparant.getElement(ColliderComponent).bounds)) {
                       // TODO: refactor
-                        if(!this.collisions.has(element.id + comparant.id)) {
-                            this.collisions.set(element.id + comparant.id, {
+                        if(!this._activeCollisions.has(element.id + comparant.id)) {
+                            this._activeCollisions.set(element.id + comparant.id, {
                                 entity: collider,
                                 collider: comparant.getElement(ColliderComponent)
                             });
@@ -80,10 +80,10 @@ export class PhysicsHandler extends ScratchSceneScript {
         // TODO: refactor
         current.forEach((coll, id) => {
             if(coll === 'new') {
-                this.collisions.get(id).entity.emitCollisionEnter(this.collisions.get(id).collider);
+                this._activeCollisions.get(id).entity.emitCollisionEnter(this._activeCollisions.get(id).collider);
             } else if(coll !== 'old') {
-                this.collisions.get(id).entity.emitCollisionExit(this.collisions.get(id).collider);
-                this.collisions.delete(id);
+                this._activeCollisions.get(id).entity.emitCollisionExit(this._activeCollisions.get(id).collider);
+                this._activeCollisions.delete(id);
             }
         });
     }
