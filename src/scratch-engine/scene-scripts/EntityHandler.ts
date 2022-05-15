@@ -7,32 +7,59 @@ export class EntityHandler extends ScratchSceneScript {
     private readonly _layerMap: Map<string, Array<string>>;
     private readonly _entityMap: Map<string, ScratchEntity>;
 
+    private readonly _removeStack: Array<string>;
+    private readonly _addStack: Array<ScratchEntity>;
+
     constructor(scene: ScratchScene) {
         super(scene);
 
         this._entityMap = new Map<string, ScratchEntity>();
         this._layerMap = new Map<string, Array<string>>();
+
+        this._removeStack = new Array<string>();
+        this._addStack = new Array<ScratchEntity>();
     }
 
     addEntity<Type extends ScratchEntity>(entity: Type): Type {
-        entity.initialize();
-        this._entityMap.set(entity.id, entity);
-
-        if(!this._layerMap.has(entity.options.layer))
-            this._layerMap.set(entity.options.layer, new Array<string>());
-
-        this._layerMap.get(entity.options.layer)!.push(entity.id);
+        this._addStack.push(entity);
 
         return entity;
     }
 
     removeEntity(entity: ScratchEntity): void {
-        entity.dispose();
-        this._entityMap.delete(entity.id);
+        this._removeStack.push(entity.id);
+    }
 
-        const index = this._layerMap.get(entity.options.layer)!.indexOf(entity.id);
-        if(index !== -1)
-            this._layerMap.get(entity.options.layer)!.splice(index, 1);
+    resolveStack(): void {
+        this.resolveRemoveStack();
+        this.resolveAddStack();
+    }
+
+    private resolveRemoveStack(): void {
+        while (this._removeStack.length > 0) {
+            const entity = this._entityMap.get(this._removeStack.pop()!)!;
+
+            entity.dispose();
+            this._entityMap.delete(entity.id);
+
+            const index = this._layerMap.get(entity.options.layer)!.indexOf(entity.id);
+            if(index !== -1)
+                this._layerMap.get(entity.options.layer)!.splice(index, 1);
+        }
+    }
+
+    private resolveAddStack(): void {
+        while(this._addStack.length > 0) {
+            const entity = this._addStack.pop()!;
+
+            entity.initialize();
+            this._entityMap.set(entity.id, entity);
+
+            if(!this._layerMap.has(entity.options.layer))
+                this._layerMap.set(entity.options.layer, new Array<string>());
+
+            this._layerMap.get(entity.options.layer)!.push(entity.id);
+        }
     }
 
     getEntitiesOfLayer(layer: string): Array<ScratchEntity> {
