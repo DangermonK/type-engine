@@ -86,17 +86,11 @@ export class ColliderComponent extends ScratchComponent {
         this.container.emit(collider._intersectionExit, collider);
     }
 
-    fixedUpdate(): void {}
-
     start(): void {
         this.container.addListener('onCollisionEnter');
         this.container.addListener('onCollisionExit');
         this.container.addListener('onTriggerEnter');
         this.container.addListener('onTriggerExit');
     }
-
-    stop(): void {}
-
-    update(): void {}
 
 }
