@@ -43,14 +43,14 @@ export class PhysicsHandler extends ScratchSceneScript {
     }
 
     private resolveAllLayers(): void {
-        [...this._layeredGridMap.keys()].forEach(layer => {
-            this.resolveLayer(layer);
-        });
+        for(const layer of [...this._layeredGridMap.keys()]) {
+            this.resolveHashLayer(layer);
+        }
     }
 
     // TODO: refactor
     collisions: Map<string, any> = new Map<string, any>();
-    private resolveCollisionsOnLayer(layer: string = 'default'): void {
+    resolveCollisionsOnLayer(layer: string = 'default'): void {
         const elements = this._entityHandler.getEntities(this._layerMap.get(layer) || []);
         const compareLayers = this.container.settings.collisionRules.get(layer) || [];
 
@@ -62,7 +62,7 @@ export class PhysicsHandler extends ScratchSceneScript {
                         this._layeredGridMap.get(compareLayer)!.getElementsFromHashes(collider.hashCoords));
                 for(const comparant of comparants) {
                   // TODO: implement collision detection for all shapes
-                    if(this.checkBoundsIntersection(collider.bounds, comparant.getElement(ColliderComponent).bounds)) {
+                    if(PhysicsHandler.checkBoundsIntersection(collider.bounds, comparant.getElement(ColliderComponent).bounds)) {
                       // TODO: refactor
                         if(!this.collisions.has(element.id + comparant.id)) {
                             this.collisions.set(element.id + comparant.id, {
@@ -88,14 +88,14 @@ export class PhysicsHandler extends ScratchSceneScript {
         });
     }
 
-    private resolveLayer(layer: string = 'default'): void {
+    resolveHashLayer(layer: string = 'default'): void {
         this._layeredGridMap.get(layer)!.clear();
         this._entityHandler.getEntities(this._layerMap.get(layer)!).forEach(entity => {
             this._layeredGridMap.get(layer)!.pushElement(entity.getElement(ColliderComponent));
         });
     }
 
-    private checkBoundsIntersection(boundsA: IBounds, boundsB: IBounds): boolean {
+    private static checkBoundsIntersection(boundsA: IBounds, boundsB: IBounds): boolean {
         return boundsA.x < boundsB.x + boundsB.w &&
                boundsA.y < boundsB.y + boundsB.h &&
                boundsA.x > boundsB.x - boundsA.w &&
@@ -104,16 +104,6 @@ export class PhysicsHandler extends ScratchSceneScript {
 
     getLayer(layer: string): HashedGrid | undefined {
         return this._layeredGridMap.get(layer);
-    }
-
-    fixedUpdate(): void {
-        this.resolveLayer('default');
-        this.resolveCollisionsOnLayer();
-    }
-
-    start(): void {
-        this.resolveLayer('static');
-        this.resolveLayer('nother');
     }
 
     dispose(): void {
