@@ -6,6 +6,10 @@ import {ColliderComponent} from "../components/ColliderComponent";
 import {IBounds} from "../interfaces/IBounds";
 import {Layer} from "../enums/Layer.enum";
 
+interface Collision {
+    entityCollider: ColliderComponent,
+    checkedCollider: ColliderComponent
+}
 
 export class PhysicsHandler extends ScratchSceneScript {
 
@@ -14,7 +18,9 @@ export class PhysicsHandler extends ScratchSceneScript {
     private readonly _layerMap: Map<Layer, Array<string>>;
     private readonly _layeredGridMap: Map<Layer, HashedGrid>;
 
-    private readonly _activeCollisions: Map<string, any> = new Map<string, any>();
+    private readonly _activeCollisions: Map<string, Collision>;
+    private readonly _enteredCollisions: Array<string>;
+    private readonly _exitedCollisions: Array<string>;
 
     constructor(scene: ScratchScene) {
         super(scene);
@@ -22,6 +28,10 @@ export class PhysicsHandler extends ScratchSceneScript {
 
         this._layerMap = new Map<Layer, Array<string>>();
         this._layeredGridMap = new Map<Layer, HashedGrid>();
+
+        this._activeCollisions = new Map<string, Collision>();
+        this._enteredCollisions = new Array<string>();
+        this._exitedCollisions = new Array<string>();
     }
 
     pushCollider(collider: ColliderComponent): void {
@@ -46,47 +56,60 @@ export class PhysicsHandler extends ScratchSceneScript {
     }
 
     resolveAllLayers(): void {
-        for(const layer of [...this._layeredGridMap.keys()]) {
+        for(const layer of this._layeredGridMap.keys()) {
             this.resolveHashLayer(layer);
         }
     }
 
-    resolveCollisionsOnLayer(layer: Layer = Layer.DEFAULT): void {
+    resolveAllCollisions(): void {
+        for(const layer of this.container.settings.collisionRules.keys()) {
+            this.resolveCollisionsOnLayer(layer);
+        }
+
+        this.emitCurrentCollisions();
+    }
+
+    private resolveCollisionsOnLayer(layer: Layer = Layer.DEFAULT): void {
         const elements = this._entityHandler.getEntities(this._layerMap.get(layer) || []);
         const compareLayers = this.container.settings.collisionRules.get(layer) || [];
 
-        const current = new Map<string, any>(this._activeCollisions);
         for(const element of elements) {
             const collider = element.getElement(ColliderComponent);
             for(const compareLayer of compareLayers) {
-                const comparants = this._entityHandler.getEntities(
+                const compareColliders = this._entityHandler.getEntities(
                         this._layeredGridMap.get(compareLayer)!.getElementsFromHashes(collider.hashCoords));
-                for(const comparant of comparants) {
+                for(const compareCollider of compareColliders) {
                   // TODO: implement collision detection for all shapes
-                    if(PhysicsHandler.checkBoundsIntersection(collider.bounds, comparant.getElement(ColliderComponent).bounds)) {
-                      // TODO: refactor
-                        if(!this._activeCollisions.has(element.id + comparant.id)) {
-                            this._activeCollisions.set(element.id + comparant.id, {
-                                entity: collider,
-                                collider: comparant.getElement(ColliderComponent)
-                            });
-                            current.set(element.id + comparant.id, "new");
-                        } else
-                            current.set(element.id + comparant.id, "old");
+                    const collisionId = element.id + compareCollider.id;
+                    if(PhysicsHandler.checkBoundsIntersection(collider.bounds, compareCollider.getElement(ColliderComponent).bounds)) {
+                        if (this._activeCollisions.has(collisionId))
+                            continue;
+
+                        this._activeCollisions.set(collisionId, {
+                            entityCollider: collider,
+                            checkedCollider: compareCollider.getElement(ColliderComponent)
+                        });
+                        this._enteredCollisions.push(collisionId);
+                    } else if(this._activeCollisions.has(collisionId)) {
+                        this._exitedCollisions.push(collisionId);
                     }
                 }
             }
         }
+    }
 
-        // TODO: refactor
-        current.forEach((coll, id) => {
-            if(coll === 'new') {
-                this._activeCollisions.get(id).entity.emitCollisionEnter(this._activeCollisions.get(id).collider);
-            } else if(coll !== 'old') {
-                this._activeCollisions.get(id).entity.emitCollisionExit(this._activeCollisions.get(id).collider);
-                this._activeCollisions.delete(id);
-            }
-        });
+    private emitCurrentCollisions(): void {
+        while(this._enteredCollisions.length > 0) {
+            const collision = this._activeCollisions.get(this._enteredCollisions.pop()!)!;
+            collision.entityCollider.emitCollisionEnter(collision.checkedCollider);
+        }
+
+        while(this._exitedCollisions.length > 0) {
+            const collisionId = this._exitedCollisions.pop()!;
+            const collision = this._activeCollisions.get(collisionId)!;
+            collision.entityCollider.emitCollisionExit(collision.checkedCollider);
+            this._activeCollisions.delete(collisionId);
+        }
     }
 
     resolveHashLayer(layer: Layer = Layer.DEFAULT): void {

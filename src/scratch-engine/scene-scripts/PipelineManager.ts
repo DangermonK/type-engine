@@ -23,6 +23,7 @@ export class PipelineManager extends ScratchSceneScript {
         this._entityHandler.getEntitiesOfLayer(Layer.DEFAULT).forEach(entity => entity.start());
 
         this._physicsHandler.resolveHashLayer(Layer.STATIC);
+        this._physicsHandler.resolveHashLayer(Layer.LAYER_01);
     }
 
     stop(): void {
@@ -30,9 +31,10 @@ export class PipelineManager extends ScratchSceneScript {
 
     fixedUpdate(): void {
         this._entityHandler.resolveStack();
-        this._physicsHandler.resolveHashLayer(Layer.DEFAULT);
+        this._entityHandler.getEntitiesOfLayer(Layer.DEFAULT).forEach(entity => entity.fixedUpdate());
 
-        this._physicsHandler.resolveCollisionsOnLayer(Layer.DEFAULT);
+        this._physicsHandler.resolveHashLayer(Layer.DEFAULT);
+        this._physicsHandler.resolveAllCollisions();
     }
 
     update(): void {}
