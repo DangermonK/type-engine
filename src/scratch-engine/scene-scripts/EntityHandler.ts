@@ -1,10 +1,11 @@
 import { ScratchSceneScript } from "../core/ScratchSceneScript.abstract";
 import { ScratchScene } from "../core/ScratchScene.abstract";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
+import {Layer} from "../enums/Layer.enum";
 
 export class EntityHandler extends ScratchSceneScript {
 
-    private readonly _layerMap: Map<string, Array<string>>;
+    private readonly _layerMap: Map<Layer, Array<string>>;
     private readonly _entityMap: Map<string, ScratchEntity>;
 
     private readonly _removeStack: Array<string>;
@@ -14,7 +15,7 @@ export class EntityHandler extends ScratchSceneScript {
         super(scene);
 
         this._entityMap = new Map<string, ScratchEntity>();
-        this._layerMap = new Map<string, Array<string>>();
+        this._layerMap = new Map<Layer, Array<string>>();
 
         this._removeStack = new Array<string>();
         this._addStack = new Array<ScratchEntity>();
@@ -62,7 +63,7 @@ export class EntityHandler extends ScratchSceneScript {
         }
     }
 
-    getEntitiesOfLayer(layer: string): Array<ScratchEntity> {
+    getEntitiesOfLayer(layer: Layer): Array<ScratchEntity> {
         const flaggedEntities = this._layerMap.get(layer) || [];
 
         const entities: Array<ScratchEntity> = new Array<ScratchEntity>();

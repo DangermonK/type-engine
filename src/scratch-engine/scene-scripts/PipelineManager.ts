@@ -2,6 +2,7 @@ import {ScratchSceneScript} from "../core/ScratchSceneScript.abstract";
 import {ScratchScene} from "../core/ScratchScene.abstract";
 import {EntityHandler} from "./EntityHandler";
 import {PhysicsHandler} from "./PhysicsHandler";
+import {Layer} from "../enums/Layer.enum";
 
 
 export class PipelineManager extends ScratchSceneScript {
@@ -19,10 +20,9 @@ export class PipelineManager extends ScratchSceneScript {
     // TODO: resolve layers via settings
     start(): void {
         this._entityHandler.resolveStack();
-        this._entityHandler.getEntitiesOfLayer('default').forEach(entity => entity.start());
+        this._entityHandler.getEntitiesOfLayer(Layer.DEFAULT).forEach(entity => entity.start());
 
-        this._physicsHandler.resolveHashLayer('static');
-        this._physicsHandler.resolveHashLayer('nother');
+        this._physicsHandler.resolveHashLayer(Layer.STATIC);
     }
 
     stop(): void {
@@ -30,10 +30,9 @@ export class PipelineManager extends ScratchSceneScript {
 
     fixedUpdate(): void {
         this._entityHandler.resolveStack();
-        this._physicsHandler.resolveHashLayer('default');
-        this._physicsHandler.resolveHashLayer('nother');
+        this._physicsHandler.resolveHashLayer(Layer.DEFAULT);
 
-        this._physicsHandler.resolveCollisionsOnLayer('default');
+        this._physicsHandler.resolveCollisionsOnLayer(Layer.DEFAULT);
     }
 
     update(): void {}
