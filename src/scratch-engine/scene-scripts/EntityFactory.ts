@@ -3,7 +3,8 @@ import { ScratchScene } from "../core/ScratchScene.abstract";
 import { v4 as uuidv4 } from "uuid";
 import { EntityHandler } from "./EntityHandler";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
-import { IScratchEntityOptions } from "../core/IScratchEntityOptions";
+import { IScratchEntityOptions } from "../interfaces/IScratchEntityOptions";
+
 
 
 export class EntityFactory extends ScratchSceneScript {

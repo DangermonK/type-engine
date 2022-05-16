@@ -4,9 +4,9 @@ import { EntityHandler } from "../scene-scripts/EntityHandler";
 import { IRunnable } from "../../core/container/IRunnable";
 import { ScratchSceneScript } from "./ScratchSceneScript.abstract";
 import { PhysicsHandler } from "../scene-scripts/PhysicsHandler";
-import { IScratchSceneSettings } from "./IScratchSceneSettings";
 import { Processor } from "../../core/container/Processor";
 import {PipelineManager} from "../scene-scripts/PipelineManager";
+import {IScratchSceneSettings} from "../interfaces/IScratchSceneSettings";
 
 export abstract class ScratchScene extends Processor<ScratchSceneScript> implements IRunnable {
 

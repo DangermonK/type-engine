@@ -2,7 +2,7 @@ import { ScratchComponent } from "../core/ScratchComponent.abstract";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
 import { PhysicsHandler } from "../scene-scripts/PhysicsHandler";
 import { Vector2 } from "../utils/Vector2";
-import { IBounds } from "../utils/IBounds";
+import {IBounds} from "../interfaces/IBounds";
 
 
 export class ColliderComponent extends ScratchComponent {

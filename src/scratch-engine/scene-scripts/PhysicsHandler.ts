@@ -3,7 +3,7 @@ import { ScratchScene } from "../core/ScratchScene.abstract";
 import { EntityHandler } from "./EntityHandler";
 import { HashedGrid } from "../utils/HashedGrid";
 import { ColliderComponent } from "../components/ColliderComponent";
-import { IBounds } from "../utils/IBounds";
+import {IBounds} from "../interfaces/IBounds";
 
 
 export class PhysicsHandler extends ScratchSceneScript {
