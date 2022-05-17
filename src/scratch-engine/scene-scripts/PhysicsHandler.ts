@@ -85,19 +85,26 @@ export class PhysicsHandler extends ScratchSceneScript {
                 for(const compareCollider of compareColliders) {
                   // TODO: implement collision detection for all shapes
                     const collisionId = element.id + compareCollider.id;
-                    if(PhysicsHandler.checkBoundsIntersection(collider.bounds, compareCollider.getElement(ColliderComponent).bounds)) {
-                        if (this._activeCollisions.has(collisionId))
-                            continue;
+                    if(this._activeCollisions.has(collisionId))
+                        continue;
 
+                    if(PhysicsHandler.checkBoundsIntersection(collider.bounds, compareCollider.getElement(ColliderComponent).bounds)) {
                         this._activeCollisions.set(collisionId, {
                             entityCollider: collider,
                             checkedCollider: compareCollider.getElement(ColliderComponent)
                         });
                         this._enteredCollisions.push(collisionId);
-                    } else if(this._activeCollisions.has(collisionId)) {
-                        this._exitedCollisions.push(collisionId);
                     }
                 }
+            }
+        }
+
+        for(const activeCollision of this._activeCollisions.keys()) {
+            const value = this._activeCollisions.get(activeCollision)!;
+            if (!PhysicsHandler.checkBoundsIntersection(
+                value.entityCollider.bounds,
+                value.checkedCollider.bounds)) {
+                this._exitedCollisions.push(activeCollision);
             }
         }
     }
