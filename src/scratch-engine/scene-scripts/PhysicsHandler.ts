@@ -5,11 +5,8 @@ import {HashedGrid} from "../utils/HashedGrid";
 import {ColliderComponent} from "../components/ColliderComponent";
 import {IBounds} from "../interfaces/IBounds";
 import {Layer} from "../enums/Layer.enum";
+import {ICollision} from "../interfaces/ICollision";
 
-interface Collision {
-    entityCollider: ColliderComponent,
-    checkedCollider: ColliderComponent
-}
 
 export class PhysicsHandler extends ScratchSceneScript {
 
@@ -18,7 +15,7 @@ export class PhysicsHandler extends ScratchSceneScript {
     private readonly _layerMap: Map<Layer, Array<string>>;
     private readonly _layeredGridMap: Map<Layer, HashedGrid>;
 
-    private readonly _activeCollisions: Map<string, Collision>;
+    private readonly _activeCollisions: Map<string, ICollision>;
     private readonly _enteredCollisions: Array<string>;
     private readonly _exitedCollisions: Array<string>;
 
@@ -29,7 +26,7 @@ export class PhysicsHandler extends ScratchSceneScript {
         this._layerMap = new Map<Layer, Array<string>>();
         this._layeredGridMap = new Map<Layer, HashedGrid>();
 
-        this._activeCollisions = new Map<string, Collision>();
+        this._activeCollisions = new Map<string, ICollision>();
         this._enteredCollisions = new Array<string>();
         this._exitedCollisions = new Array<string>();
     }
