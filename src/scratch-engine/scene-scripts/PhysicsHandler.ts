@@ -48,10 +48,11 @@ export class PhysicsHandler extends ScratchSceneScript {
 
         layer.splice(index, 1);
 
-        // TODO: Only use following line if definitely needed due to performance decrease
+        // TODO: only use following line if definitely needed due to performance decrease
         // this._layeredGridMap.get(collider.container.options.layer)!.removeElement(collider);
     }
 
+    // TODO: optimize to only resolving moved entities
     resolveAllLayers(): void {
         for(const layer of this._layeredGridMap.keys()) {
             this.resolveHashLayer(layer);
@@ -74,6 +75,8 @@ export class PhysicsHandler extends ScratchSceneScript {
         this.emitCurrentCollisions();
     }
 
+    // TODO: optimize same layer collisions
+    // TODO: optimize collision checks for none moving objects
     private resolveCollisionsOnLayer(layer: Layer = Layer.DEFAULT): void {
         const elements = this._entityHandler.getEntities(this._layerMap.get(layer) || []);
         const compareLayers = this.container.settings.collisionRules.get(layer) || [];
