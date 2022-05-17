@@ -9,16 +9,20 @@ export class Processor<Type extends Process<any>> extends Container<Type> implem
 
     }
 
+    override initialize() {
+        super.initialize();
+
+        this.addListener('start');
+        this.addListener('stop');
+        this.addListener('fixedUpdate');
+        this.addListener('update');
+    }
+
     fixedUpdate(): void {
         this.emit('fixedUpdate');
     }
 
     start(): void {
-        this.addListener('start');
-        this.addListener('stop');
-        this.addListener('fixedUpdate');
-        this.addListener('update');
-
         this.emit('start');
     }
 

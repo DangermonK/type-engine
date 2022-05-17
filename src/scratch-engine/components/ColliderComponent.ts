@@ -72,6 +72,11 @@ export class ColliderComponent extends ScratchComponent {
 
     override initialize() {
         this.container.scene.getElement(PhysicsHandler).pushCollider(this);
+
+        this.container.addListener('onCollisionEnter');
+        this.container.addListener('onCollisionExit');
+        this.container.addListener('onTriggerEnter');
+        this.container.addListener('onTriggerExit');
     }
 
     override dispose() {
@@ -84,13 +89,6 @@ export class ColliderComponent extends ScratchComponent {
 
     emitCollisionExit(collider: ColliderComponent): void {
         this.container.emit(collider._intersectionExit, collider);
-    }
-
-    start(): void {
-        this.container.addListener('onCollisionEnter');
-        this.container.addListener('onCollisionExit');
-        this.container.addListener('onTriggerEnter');
-        this.container.addListener('onTriggerExit');
     }
 
 }
