@@ -21,7 +21,7 @@ export class PipelineManager extends ScratchSceneScript {
         this._entityHandler.resolveStack();
 
         // TODO: automate entity calls for all layers
-        this._entityHandler.getEntitiesOfLayer(Layer.DEFAULT).forEach(entity => entity.start());
+        this._physicsHandler.getEntitiesOfLayer(Layer.DEFAULT).forEach(entity => entity.start());
 
         this._physicsHandler.resolveAllLayers();
     }
@@ -33,7 +33,7 @@ export class PipelineManager extends ScratchSceneScript {
         this._entityHandler.resolveStack();
 
         // TODO: automate entity calls for all layers
-        this._entityHandler.getEntitiesOfLayer(Layer.DEFAULT).forEach(entity => entity.fixedUpdate());
+        this._physicsHandler.getEntitiesOfLayer(Layer.DEFAULT).forEach(entity => entity.fixedUpdate());
         // TODO: automate hashing on all layers
         this._physicsHandler.resolveHashLayer(Layer.DEFAULT);
         this._physicsHandler.resolveAllCollisions();
