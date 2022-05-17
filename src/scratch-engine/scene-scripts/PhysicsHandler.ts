@@ -58,6 +58,13 @@ export class PhysicsHandler extends ScratchSceneScript {
         }
     }
 
+    resolveHashLayer(layer: Layer = Layer.DEFAULT): void {
+        this._layeredGridMap.get(layer)!.clear();
+        for(const entity of this._entityHandler.getEntities(this._layerMap.get(layer)!)) {
+            this._layeredGridMap.get(layer)!.pushElement(entity.getElement(ColliderComponent));
+        }
+    }
+
     resolveAllCollisions(): void {
         for(const layer of this.container.settings.collisionRules.keys()) {
             this.resolveCollisionsOnLayer(layer);
@@ -107,13 +114,6 @@ export class PhysicsHandler extends ScratchSceneScript {
             collision.entityCollider.emitCollisionExit(collision.checkedCollider);
             this._activeCollisions.delete(collisionId);
         }
-    }
-
-    resolveHashLayer(layer: Layer = Layer.DEFAULT): void {
-        this._layeredGridMap.get(layer)!.clear();
-        this._entityHandler.getEntities(this._layerMap.get(layer)!).forEach(entity => {
-            this._layeredGridMap.get(layer)!.pushElement(entity.getElement(ColliderComponent));
-        });
     }
 
     private static checkBoundsIntersection(boundsA: IBounds, boundsB: IBounds): boolean {

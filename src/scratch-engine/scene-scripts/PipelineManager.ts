@@ -17,13 +17,11 @@ export class PipelineManager extends ScratchSceneScript {
         this._physicsHandler = this.container.requireType(PhysicsHandler);
     }
 
-    // TODO: resolve layers via settings
     start(): void {
         this._entityHandler.resolveStack();
         this._entityHandler.getEntitiesOfLayer(Layer.DEFAULT).forEach(entity => entity.start());
 
-        this._physicsHandler.resolveHashLayer(Layer.STATIC);
-        this._physicsHandler.resolveHashLayer(Layer.LAYER_01);
+        this._physicsHandler.resolveAllLayers();
     }
 
     stop(): void {
