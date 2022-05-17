@@ -50,6 +50,10 @@ export class Container<Type extends Scriptable<any>> implements IContainer<Type>
         this._scriptMap.all.forEach((script: Scriptable<any>) => script.dispose());
     }
 
+    hasListener(method: string): boolean {
+        return this._listenerMap.has(method);
+    }
+
     addListener(method: string): void {
         for(const script of this.scripts) {
             if(typeof (script as any)[method] === 'function') {

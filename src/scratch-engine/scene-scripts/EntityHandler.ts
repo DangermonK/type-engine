@@ -1,11 +1,9 @@
 import { ScratchSceneScript } from "../core/ScratchSceneScript.abstract";
 import { ScratchScene } from "../core/ScratchScene.abstract";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
-import {Layer} from "../enums/Layer.enum";
 
 export class EntityHandler extends ScratchSceneScript {
 
-    private readonly _layerMap: Map<Layer, Array<string>>;
     private readonly _entityMap: Map<string, ScratchEntity>;
 
     private readonly _removeStack: Array<string>;
@@ -15,7 +13,6 @@ export class EntityHandler extends ScratchSceneScript {
         super(scene);
 
         this._entityMap = new Map<string, ScratchEntity>();
-        this._layerMap = new Map<Layer, Array<string>>();
 
         this._removeStack = new Array<string>();
         this._addStack = new Array<ScratchEntity>();
@@ -42,10 +39,6 @@ export class EntityHandler extends ScratchSceneScript {
 
             entity.dispose();
             this._entityMap.delete(entity.id);
-
-            const index = this._layerMap.get(entity.options.layer)!.indexOf(entity.id);
-            if(index !== -1)
-                this._layerMap.get(entity.options.layer)!.splice(index, 1);
         }
     }
 
@@ -55,22 +48,7 @@ export class EntityHandler extends ScratchSceneScript {
 
             entity.initialize();
             this._entityMap.set(entity.id, entity);
-
-            if(!this._layerMap.has(entity.options.layer))
-                this._layerMap.set(entity.options.layer, new Array<string>());
-
-            this._layerMap.get(entity.options.layer)!.push(entity.id);
         }
-    }
-
-    getEntitiesOfLayer(layer: Layer): Array<ScratchEntity> {
-        const flaggedEntities = this._layerMap.get(layer) || [];
-
-        const entities: Array<ScratchEntity> = new Array<ScratchEntity>();
-        for(let i = 0; i < flaggedEntities.length; i++) {
-            entities.push(this._entityMap.get(flaggedEntities[i])!);
-        }
-        return entities;
     }
 
     getEntities(ids: Array<string>): Array<ScratchEntity> {
