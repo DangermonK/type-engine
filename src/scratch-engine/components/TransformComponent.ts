@@ -27,8 +27,8 @@ export class TransformComponent extends ScratchComponent {
     }
 
     scale(x: number, y: number): void {
-        this.size.x += x;
-        this.size.y += y;
+        this.size.x *= x;
+        this.size.y *= y;
     }
 
     initialize(): void {

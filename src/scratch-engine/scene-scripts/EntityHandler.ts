@@ -9,6 +9,8 @@ export class EntityHandler extends ScratchSceneScript {
     private readonly _removeStack: Array<string>;
     private readonly _addStack: Array<ScratchEntity>;
 
+    private readonly _listenerFunctionMap: Map<string, Array<string>>;
+
     constructor(scene: ScratchScene) {
         super(scene);
 
@@ -16,6 +18,8 @@ export class EntityHandler extends ScratchSceneScript {
 
         this._removeStack = new Array<string>();
         this._addStack = new Array<ScratchEntity>();
+
+        this._listenerFunctionMap = new Map<string, Array<string>>();
     }
 
     addEntity<Type extends ScratchEntity>(entity: Type): Type {
@@ -33,12 +37,36 @@ export class EntityHandler extends ScratchSceneScript {
         this.resolveAddStack();
     }
 
+    private addEntityListenerFunctions(entity: ScratchEntity): void {
+        for(const func of ['update', 'fixedUpdate', 'start', 'stop']) {
+            if(!entity.hasListener(func))
+                continue;
+
+            if(!this._listenerFunctionMap.has(func))
+                this._listenerFunctionMap.set(func, new Array<string>());
+
+            this._listenerFunctionMap.get(func)!.push(entity.id);
+        }
+    }
+
+    private removeEntityListenerFunctions(entity: ScratchEntity): void {
+        for(const func of ['update', 'fixedUpdate', 'start', 'stop']) {
+            if(!entity.hasListener(func))
+                continue;
+
+            const index = this._listenerFunctionMap.get(func)!.indexOf(entity.id);
+            this._listenerFunctionMap.get(func)!.splice(index, 1);
+        }
+    }
+
     private resolveRemoveStack(): void {
         while (this._removeStack.length > 0) {
             const entity = this._entityMap.get(this._removeStack.pop()!)!;
 
             entity.dispose();
             this._entityMap.delete(entity.id);
+
+            this.removeEntityListenerFunctions(entity);
         }
     }
 
@@ -48,6 +76,8 @@ export class EntityHandler extends ScratchSceneScript {
 
             entity.initialize();
             this._entityMap.set(entity.id, entity);
+
+            this.addEntityListenerFunctions(entity);
         }
     }
 
@@ -65,6 +95,30 @@ export class EntityHandler extends ScratchSceneScript {
 
     get entities(): Array<ScratchEntity> {
         return [...this._entityMap.values()];
+    }
+
+    start(): void {
+        for(const entityId of this._listenerFunctionMap.get('start') || []) {
+            this._entityMap.get(entityId)!.emit('start');
+        }
+    }
+
+    stop(): void {
+        for(const entityId of this._listenerFunctionMap.get('stop') || []) {
+            this._entityMap.get(entityId)!.emit('stop');
+        }
+    }
+
+    fixedUpdate(): void {
+        for(const entityId of this._listenerFunctionMap.get('fixedUpdate') || []) {
+            this._entityMap.get(entityId)!.emit('fixedUpdate');
+        }
+    }
+
+    update(): void {
+        for(const entityId of this._listenerFunctionMap.get('update') || []) {
+            this._entityMap.get(entityId)!.emit('update');
+        }
     }
 
     dispose(): void {

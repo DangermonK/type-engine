@@ -56,12 +56,13 @@ export class Container<Type extends Scriptable<any>> implements IContainer<Type>
 
     addListener(method: string): void {
         for(const script of this.scripts) {
-            if(typeof (script as any)[method] === 'function') {
-                if(!this._listenerMap.has(method))
-                    this._listenerMap.set(method, new Array<(data?: any) => void>());
+            if(typeof (script as any)[method] !== 'function')
+                continue;
 
-                this._listenerMap.get(method)!.push((script as any)[method].bind(script));
-            }
+            if(!this._listenerMap.has(method))
+                this._listenerMap.set(method, new Array<(data?: any) => void>());
+
+            this._listenerMap.get(method)!.push((script as any)[method].bind(script));
         }
     }
 
