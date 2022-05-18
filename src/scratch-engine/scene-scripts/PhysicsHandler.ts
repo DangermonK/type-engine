@@ -38,6 +38,8 @@ export class PhysicsHandler extends ScratchSceneScript {
 
         if(!this._layeredGridMap.has(collider.container.options.layer))
             this._layeredGridMap.set(collider.container.options.layer, new HashedGrid(this.container.settings.hashGridCellSize));
+
+        this._layeredGridMap.get(collider.container.options.layer)!.pushElement(collider);
     }
 
     removeCollider(collider: ColliderComponent): void {
