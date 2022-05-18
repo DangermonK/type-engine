@@ -37,7 +37,7 @@ export class GraphicsHandler extends ScratchSceneScript {
         this.update = () => {
             this._ctx!.clearRect(0, 0, this._ctx!.canvas.width, this._ctx!.canvas.height);
 
-            for(const entity of this._entityHandler.getEntities(this._renderedEntities)) {
+            for(const entity of this._entityHandler.getEntities(this._renderedEntities.values())) {
                 entity.emit('render', this._ctx);
             }
         };
