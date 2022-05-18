@@ -98,6 +98,8 @@ export class EntityHandler extends ScratchSceneScript {
     }
 
     start(): void {
+        this.resolveStack();
+
         for(const entityId of this._listenerFunctionMap.get('start') || []) {
             this._entityMap.get(entityId)!.emit('start');
         }
@@ -110,6 +112,8 @@ export class EntityHandler extends ScratchSceneScript {
     }
 
     fixedUpdate(): void {
+        this.resolveStack();
+
         for(const entityId of this._listenerFunctionMap.get('fixedUpdate') || []) {
             this._entityMap.get(entityId)!.emit('fixedUpdate');
         }
@@ -125,6 +129,7 @@ export class EntityHandler extends ScratchSceneScript {
     }
 
     initialize(): void {
+        this.resolveStack();
     }
 
 }
