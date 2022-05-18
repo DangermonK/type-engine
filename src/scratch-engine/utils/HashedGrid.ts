@@ -3,7 +3,7 @@ import { ColliderComponent } from "../components/ColliderComponent";
 
 export class HashedGrid {
 
-    private readonly _hashedGrid: Map<string, Array<string>>;
+    private readonly _hashedGrid: Map<string, Map<string, string>>;
 
     private readonly _cellSize: number;
 
@@ -11,7 +11,7 @@ export class HashedGrid {
 
         this._cellSize = cellSize;
 
-        this._hashedGrid = new Map<string, Array<string>>();
+        this._hashedGrid = new Map<string, Map<string, string>>();
 
     }
 
@@ -21,9 +21,9 @@ export class HashedGrid {
 
     private pushHash(hash: string, id: string): void {
         if(!this._hashedGrid.has(hash))
-            this._hashedGrid.set(hash, new Array<string>());
+            this._hashedGrid.set(hash, new Map<string, string>());
 
-        this._hashedGrid.get(hash)?.push(id);
+        this._hashedGrid.get(hash)!.set(id, id);
     }
 
     private getCorners(collider: ColliderComponent): any {
@@ -40,13 +40,14 @@ export class HashedGrid {
     }
 
     removeElement(collider: ColliderComponent): void {
-      collider.hashCoords.forEach(hash => {
-        const index = this._hashedGrid.get(hash)!.indexOf(collider.container.id);
-        if(index === -1)
-          return;
+      for(const hash of collider.hashCoords) {
+        this._hashedGrid.get(hash)!.delete(collider.container.id);
+      }
+    }
 
-        this._hashedGrid.get(hash)!.splice(index, 1);
-      });
+    updateElement(collider: ColliderComponent): void {
+        this.removeElement(collider);
+        this.pushElement(collider);
     }
 
     pushElement(collider: ColliderComponent): void {
@@ -65,16 +66,18 @@ export class HashedGrid {
     getElementsFromHashes(hashes: Array<string>): Array<string> {
         let arr: Array<string> = new Array<string>();
         for (const hash of hashes) {
-            arr = arr.concat(this._hashedGrid.get(hash) || []);
+            for(const id of this._hashedGrid.get(hash)?.keys() || []) {
+                arr.push(id);
+            }
         }
 
         return [...new Set(arr)];
     }
 
-    getElementsFromAt(x: number, y: number): Array<string> {
+    getElementsFromCoordinates(x: number, y: number): Array<string> {
         const hash = this.buildHash(x, y);
 
-        return this._hashedGrid.get(hash) || [];
+        return [...this._hashedGrid.get(hash)?.keys() || []];
     }
 
     getElementsFromBounds(collider: ColliderComponent): Array<string> {
@@ -84,7 +87,7 @@ export class HashedGrid {
         for(let i = corners.yMin; i <= corners.yMax; i++) {
             for (let j = corners.xMin; j <= corners.xMax; j++) {
                 const hash = this.buildHash(j, i);
-                arr = arr.concat(this._hashedGrid.get(hash) || []);
+                arr = arr.concat([...this._hashedGrid.get(hash)?.keys() || []]);
             }
         }
         return [...new Set(arr)];

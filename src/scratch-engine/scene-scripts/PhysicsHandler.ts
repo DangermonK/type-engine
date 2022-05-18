@@ -12,7 +12,7 @@ export class PhysicsHandler extends ScratchSceneScript {
 
     private readonly _entityHandler: EntityHandler;
 
-    private readonly _layerMap: Map<Layer, Array<string>>;
+    private readonly _layerMap: Map<Layer, Map<string, string>>;
     private readonly _layeredGridMap: Map<Layer, HashedGrid>;
 
     private readonly _activeCollisions: Map<string, ICollision>;
@@ -23,7 +23,7 @@ export class PhysicsHandler extends ScratchSceneScript {
         super(scene);
         this._entityHandler = this.container.requireType(EntityHandler);
 
-        this._layerMap = new Map<Layer, Array<string>>();
+        this._layerMap = new Map<Layer, Map<string, string>>();
         this._layeredGridMap = new Map<Layer, HashedGrid>();
 
         this._activeCollisions = new Map<string, ICollision>();
@@ -33,22 +33,15 @@ export class PhysicsHandler extends ScratchSceneScript {
 
     pushCollider(collider: ColliderComponent): void {
         if(!this._layerMap.has(collider.container.options.layer))
-            this._layerMap.set(collider.container.options.layer, new Array<string>());
-        this._layerMap.get(collider.container.options.layer)!.push(collider.container.id);
+            this._layerMap.set(collider.container.options.layer, new Map<string, string>());
+        this._layerMap.get(collider.container.options.layer)!.set(collider.container.id, collider.container.id);
 
         if(!this._layeredGridMap.has(collider.container.options.layer))
             this._layeredGridMap.set(collider.container.options.layer, new HashedGrid(this.container.settings.hashGridCellSize));
     }
 
     removeCollider(collider: ColliderComponent): void {
-        const layer = this._layerMap.get(collider.container.options.layer)!;
-        const index = layer.indexOf(collider.container.id);
-        if(index === -1)
-            return;
-
-        layer.splice(index, 1);
-
-        // TODO: only use following line if definitely needed due to performance decrease
+        this._layerMap.get(collider.container.options.layer)!.delete(collider.container.id);
         this._layeredGridMap.get(collider.container.options.layer)!.removeElement(collider);
     }
 
@@ -61,7 +54,7 @@ export class PhysicsHandler extends ScratchSceneScript {
 
     resolveHashLayer(layer: Layer = Layer.DEFAULT): void {
         this._layeredGridMap.get(layer)!.clear();
-        for(const entity of this._entityHandler.getEntities(this._layerMap.get(layer)!)) {
+        for(const entity of this._entityHandler.getEntities(this._layerMap.get(layer)!.keys() ?? [])) {
             this._layeredGridMap.get(layer)!.pushElement(entity.getElement(ColliderComponent));
         }
     }
@@ -78,14 +71,14 @@ export class PhysicsHandler extends ScratchSceneScript {
     // TODO: optimize same layer collisions
     // TODO: optimize collision checks for none moving objects
     private resolveCollisionsOnLayer(layer: Layer = Layer.DEFAULT): void {
-        const elements = this._entityHandler.getEntities(this._layerMap.get(layer) || []);
+        const elements = this._entityHandler.getEntities(this._layerMap.get(layer)!.keys() ?? []);
         const compareLayers = this.container.settings.collisionRules.get(layer) || [];
 
         for(const element of elements) {
             const collider = element.getElement(ColliderComponent);
             for(const compareLayer of compareLayers) {
                 const compareColliders = this._entityHandler.getEntities(
-                        this._layeredGridMap.get(compareLayer)!.getElementsFromHashes(collider.hashCoords));
+                        this._layeredGridMap.get(compareLayer)!.getElementsFromHashes(collider.hashCoords).values());
                 for(const compareCollider of compareColliders) {
                     // TODO: improve irrelevant checks
                     if(element.id === compareCollider.id)
@@ -142,7 +135,7 @@ export class PhysicsHandler extends ScratchSceneScript {
     }
 
     getEntitiesOfLayer(layer: Layer = Layer.DEFAULT): Array<ScratchEntity> {
-        return this._entityHandler.getEntities(this._layerMap.get(layer)!);
+        return this._entityHandler.getEntities(this._layerMap.get(layer)!.keys() ?? []);
     }
 
     private start(): void {
@@ -150,13 +143,9 @@ export class PhysicsHandler extends ScratchSceneScript {
     }
 
     private fixedUpdate(): void {
-        this.resolveAllLayers();
+        this.resolveHashLayer();
 
         this.resolveAllCollisions();
-    }
-
-    getLayer(layer: Layer): HashedGrid | undefined {
-        return this._layeredGridMap.get(layer);
     }
 
     dispose(): void {
