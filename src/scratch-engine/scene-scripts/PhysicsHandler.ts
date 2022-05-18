@@ -145,6 +145,16 @@ export class PhysicsHandler extends ScratchSceneScript {
         return this._entityHandler.getEntities(this._layerMap.get(layer)!);
     }
 
+    private start(): void {
+        this.resolveAllLayers();
+    }
+
+    private fixedUpdate(): void {
+        this.resolveAllLayers();
+
+        this.resolveAllCollisions();
+    }
+
     getLayer(layer: Layer): HashedGrid | undefined {
         return this._layeredGridMap.get(layer);
     }
