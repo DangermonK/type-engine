@@ -49,7 +49,7 @@ export class PhysicsHandler extends ScratchSceneScript {
         layer.splice(index, 1);
 
         // TODO: only use following line if definitely needed due to performance decrease
-        // this._layeredGridMap.get(collider.container.options.layer)!.removeElement(collider);
+        this._layeredGridMap.get(collider.container.options.layer)!.removeElement(collider);
     }
 
     // TODO: optimize to only resolving moved entities
