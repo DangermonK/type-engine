@@ -28,7 +28,8 @@ export class PipelineManager extends ScratchSceneScript {
     fixedUpdate(): void {
         this._entityHandler.resolveStack();
         // TODO: automate hashing on all layers
-        this._physicsHandler.resolveHashLayer(Layer.DEFAULT);
+        this._physicsHandler.resolveAllLayers();
+
         this._physicsHandler.resolveAllCollisions();
 
     }
