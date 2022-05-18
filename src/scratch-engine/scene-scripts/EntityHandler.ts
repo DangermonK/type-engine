@@ -81,23 +81,28 @@ export class EntityHandler extends ScratchSceneScript {
         }
     }
 
-    getEntities(ids: Array<string>): Array<ScratchEntity> {
+    getEntities(ids: IterableIterator<string>): Array<ScratchEntity> {
         const arr: Array<ScratchEntity> = new Array<ScratchEntity>();
-        for(let i = 0; i < ids.length; i++) {
-            arr.push(this._entityMap.get(ids[i])!);
+        for(const id of ids) {
+            arr.push(this._entityMap.get(id)!);
         }
         return arr;
     }
 
     getEntitiesOfType<Type extends ScratchEntity>(type: new(...args: Array<any>) => Type): Array<Type> {
-        return this.entities.filter(entity => entity instanceof type) as Array<Type>;
+        const output: Array<Type> = new Array<Type>();
+        for(const entity of this.entities) {
+            if(entity instanceof type)
+                output.push(entity);
+        }
+        return output;
     }
 
-    get entities(): Array<ScratchEntity> {
-        return [...this._entityMap.values()];
+    get entities(): IterableIterator<ScratchEntity> {
+        return this._entityMap.values();
     }
 
-    start(): void {
+    private start(): void {
         this.resolveStack();
 
         for(const entityId of this._listenerFunctionMap.get('start') || []) {
@@ -105,13 +110,13 @@ export class EntityHandler extends ScratchSceneScript {
         }
     }
 
-    stop(): void {
+    private stop(): void {
         for(const entityId of this._listenerFunctionMap.get('stop') || []) {
             this._entityMap.get(entityId)!.emit('stop');
         }
     }
 
-    fixedUpdate(): void {
+    private fixedUpdate(): void {
         this.resolveStack();
 
         for(const entityId of this._listenerFunctionMap.get('fixedUpdate') || []) {
@@ -119,7 +124,7 @@ export class EntityHandler extends ScratchSceneScript {
         }
     }
 
-    update(): void {
+    private update(): void {
         for(const entityId of this._listenerFunctionMap.get('update') || []) {
             this._entityMap.get(entityId)!.emit('update');
         }
