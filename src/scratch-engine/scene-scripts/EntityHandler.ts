@@ -6,7 +6,7 @@ export class EntityHandler extends ScratchSceneScript {
 
     private readonly _entityMap: Map<string, ScratchEntity>;
 
-    private readonly _removeStack: Array<string>;
+    private readonly _removeStack: Set<string>;
     private readonly _addStack: Array<ScratchEntity>;
 
     private readonly _listenerFunctionMap: Map<string, Map<string, string>>;
@@ -16,7 +16,7 @@ export class EntityHandler extends ScratchSceneScript {
 
         this._entityMap = new Map<string, ScratchEntity>();
 
-        this._removeStack = new Array<string>();
+        this._removeStack = new Set<string>();
         this._addStack = new Array<ScratchEntity>();
 
         this._listenerFunctionMap = new Map<string, Map<string, string>>();
@@ -29,7 +29,7 @@ export class EntityHandler extends ScratchSceneScript {
     }
 
     removeEntity(entity: ScratchEntity): void {
-        this._removeStack.push(entity.id);
+        this._removeStack.add(entity.id);
     }
 
     resolveStack(): void {
@@ -59,14 +59,15 @@ export class EntityHandler extends ScratchSceneScript {
     }
 
     private resolveRemoveStack(): void {
-        while (this._removeStack.length > 0) {
-            const entity = this._entityMap.get(this._removeStack.pop()!)!;
+        for(const id of this._removeStack) {
+            const entity = this._entityMap.get(id)!;
 
             entity.dispose();
             this._entityMap.delete(entity.id);
 
             this.removeEntityListenerFunctions(entity);
         }
+        this._removeStack.clear();
     }
 
     private resolveAddStack(): void {
