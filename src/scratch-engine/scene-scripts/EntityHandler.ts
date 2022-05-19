@@ -81,7 +81,7 @@ export class EntityHandler extends ScratchSceneScript {
         }
     }
 
-    getEntities(ids: IterableIterator<string>): Array<ScratchEntity> {
+    getEntities(ids: Set<string>): Array<ScratchEntity> {
         const arr: Array<ScratchEntity> = new Array<ScratchEntity>();
         for(const id of ids) {
             arr.push(this._entityMap.get(id)!);
@@ -91,7 +91,7 @@ export class EntityHandler extends ScratchSceneScript {
 
     getEntitiesOfType<Type extends ScratchEntity>(type: new(...args: Array<any>) => Type): Array<Type> {
         const output: Array<Type> = new Array<Type>();
-        for(const entity of this.entities) {
+        for(const entity of this._entityMap) {
             if(entity instanceof type)
                 output.push(entity);
         }

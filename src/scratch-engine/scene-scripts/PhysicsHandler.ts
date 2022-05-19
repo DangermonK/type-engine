@@ -56,7 +56,7 @@ export class PhysicsHandler extends ScratchSceneScript {
 
     resolveHashLayer(layer: Layer = Layer.DEFAULT): void {
         this._layeredGridMap.get(layer)!.clear();
-        for(const entity of this._entityHandler.getEntities(this._layerMap.get(layer)!.keys())) {
+        for(const entity of this._entityHandler.getEntities(this._layerMap.get(layer)!)) {
             this._layeredGridMap.get(layer)!.pushElement(entity.getElement(ColliderComponent));
         }
     }
@@ -73,14 +73,14 @@ export class PhysicsHandler extends ScratchSceneScript {
     // TODO: optimize same layer collisions
     // TODO: optimize collision checks for none moving objects
     private resolveCollisionsOnLayer(layer: Layer = Layer.DEFAULT): void {
-        const elements = this._entityHandler.getEntities(this._layerMap.get(layer)!.keys());
+        const elements = this._entityHandler.getEntities(this._layerMap.get(layer)!);
         const compareLayers = this.container.settings.collisionRules.get(layer) || [];
 
         for(const element of elements) {
             const collider = element.getElement(ColliderComponent);
             for(const compareLayer of compareLayers) {
                 const compareColliders = this._entityHandler.getEntities(
-                        this._layeredGridMap.get(compareLayer)!.getElementsFromHashes(collider.hashCoords).values());
+                        this._layeredGridMap.get(compareLayer)!.getElementsFromHashes(collider.hashCoords));
                 for(const compareCollider of compareColliders) {
                     // TODO: improve irrelevant checks
                     if(element.id === compareCollider.id)
@@ -139,7 +139,7 @@ export class PhysicsHandler extends ScratchSceneScript {
     }
 
     getEntitiesOfLayer(layer: Layer = Layer.DEFAULT): Array<ScratchEntity> {
-        return this._entityHandler.getEntities(this._layerMap.get(layer)!.keys());
+        return this._entityHandler.getEntities(this._layerMap.get(layer)!);
     }
 
     private start(): void {
