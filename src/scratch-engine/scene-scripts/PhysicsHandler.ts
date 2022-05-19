@@ -141,7 +141,6 @@ export class PhysicsHandler extends ScratchSceneScript {
     }
 
     private start(): void {
-        this.resolveAllLayers();
     }
 
     private fixedUpdate(): void {

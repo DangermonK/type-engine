@@ -3,7 +3,7 @@ import { ColliderComponent } from "../components/ColliderComponent";
 
 export class HashedGrid {
 
-    private readonly _hashedGrid: Map<string, Map<string, string>>;
+    private readonly _hashedGrid: Map<string, Set<string>>;
 
     private readonly _cellSize: number;
 
@@ -11,7 +11,7 @@ export class HashedGrid {
 
         this._cellSize = cellSize;
 
-        this._hashedGrid = new Map<string, Map<string, string>>();
+        this._hashedGrid = new Map<string, Set<string>>();
 
     }
 
@@ -21,9 +21,9 @@ export class HashedGrid {
 
     private pushHash(hash: string, id: string): void {
         if(!this._hashedGrid.has(hash))
-            this._hashedGrid.set(hash, new Map<string, string>());
+            this._hashedGrid.set(hash, new Set<string>());
 
-        this._hashedGrid.get(hash)!.set(id, id);
+        this._hashedGrid.get(hash)!.add(id);
     }
 
     private getCorners(collider: ColliderComponent): any {
@@ -66,7 +66,7 @@ export class HashedGrid {
     getElementsFromHashes(hashes: Array<string>): Array<string> {
         let arr: Array<string> = new Array<string>();
         for (const hash of hashes) {
-            for(const id of this._hashedGrid.get(hash)?.keys() || []) {
+            for(const id of this._hashedGrid.get(hash) || []) {
                 arr.push(id);
             }
         }
@@ -77,7 +77,7 @@ export class HashedGrid {
     getElementsFromCoordinates(x: number, y: number): Array<string> {
         const hash = this.buildHash(x, y);
 
-        return [...this._hashedGrid.get(hash)?.keys() || []];
+        return [...this._hashedGrid.get(hash) || []];
     }
 
     getElementsFromBounds(collider: ColliderComponent): Array<string> {
@@ -87,7 +87,7 @@ export class HashedGrid {
         for(let i = corners.yMin; i <= corners.yMax; i++) {
             for (let j = corners.xMin; j <= corners.xMax; j++) {
                 const hash = this.buildHash(j, i);
-                arr = arr.concat([...this._hashedGrid.get(hash)?.keys() || []]);
+                arr = arr.concat([...this._hashedGrid.get(hash) || []]);
             }
         }
         return [...new Set(arr)];
