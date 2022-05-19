@@ -12,29 +12,29 @@ export class PhysicsHandler extends ScratchSceneScript {
 
     private readonly _entityHandler: EntityHandler;
 
-    private readonly _layerMap: Map<Layer, Map<string, string>>;
+    private readonly _layerMap: Map<Layer, Set<string>>;
     private readonly _layeredGridMap: Map<Layer, HashedGrid>;
 
     private readonly _activeCollisions: Map<string, ICollision>;
-    private readonly _enteredCollisions: Array<string>;
-    private readonly _exitedCollisions: Array<string>;
+    private readonly _enteredCollisions: Set<string>;
+    private readonly _exitedCollisions: Set<string>;
 
     constructor(scene: ScratchScene) {
         super(scene);
         this._entityHandler = this.container.requireType(EntityHandler);
 
-        this._layerMap = new Map<Layer, Map<string, string>>();
+        this._layerMap = new Map<Layer, Set<string>>();
         this._layeredGridMap = new Map<Layer, HashedGrid>();
 
         this._activeCollisions = new Map<string, ICollision>();
-        this._enteredCollisions = new Array<string>();
-        this._exitedCollisions = new Array<string>();
+        this._enteredCollisions = new Set<string>();
+        this._exitedCollisions = new Set<string>();
     }
 
     pushCollider(collider: ColliderComponent): void {
         if(!this._layerMap.has(collider.container.options.layer))
-            this._layerMap.set(collider.container.options.layer, new Map<string, string>());
-        this._layerMap.get(collider.container.options.layer)!.set(collider.container.id, collider.container.id);
+            this._layerMap.set(collider.container.options.layer, new Set<string>());
+        this._layerMap.get(collider.container.options.layer)!.add(collider.container.id);
 
         if(!this._layeredGridMap.has(collider.container.options.layer))
             this._layeredGridMap.set(collider.container.options.layer, new HashedGrid(this.container.settings.hashGridCellSize));
@@ -56,7 +56,7 @@ export class PhysicsHandler extends ScratchSceneScript {
 
     resolveHashLayer(layer: Layer = Layer.DEFAULT): void {
         this._layeredGridMap.get(layer)!.clear();
-        for(const entity of this._entityHandler.getEntities(this._layerMap.get(layer)!.keys() ?? [])) {
+        for(const entity of this._entityHandler.getEntities(this._layerMap.get(layer)!.keys())) {
             this._layeredGridMap.get(layer)!.pushElement(entity.getElement(ColliderComponent));
         }
     }
@@ -73,7 +73,7 @@ export class PhysicsHandler extends ScratchSceneScript {
     // TODO: optimize same layer collisions
     // TODO: optimize collision checks for none moving objects
     private resolveCollisionsOnLayer(layer: Layer = Layer.DEFAULT): void {
-        const elements = this._entityHandler.getEntities(this._layerMap.get(layer)!.keys() ?? []);
+        const elements = this._entityHandler.getEntities(this._layerMap.get(layer)!.keys());
         const compareLayers = this.container.settings.collisionRules.get(layer) || [];
 
         for(const element of elements) {
@@ -96,7 +96,7 @@ export class PhysicsHandler extends ScratchSceneScript {
                             entityCollider: collider,
                             checkedCollider: compareCollider.getElement(ColliderComponent)
                         });
-                        this._enteredCollisions.push(collisionId);
+                        this._enteredCollisions.add(collisionId);
                     }
                 }
             }
@@ -110,23 +110,25 @@ export class PhysicsHandler extends ScratchSceneScript {
             if (!PhysicsHandler.checkBoundsIntersection(
                 value.entityCollider.bounds,
                 value.checkedCollider.bounds)) {
-                this._exitedCollisions.push(uncheckedCollision);
+                this._exitedCollisions.add(uncheckedCollision);
             }
         }
     }
 
     private emitCurrentCollisions(): void {
-        while(this._enteredCollisions.length > 0) {
-            const collision = this._activeCollisions.get(this._enteredCollisions.pop()!)!;
+        for(const collisionId of this._enteredCollisions) {
+            const collision = this._activeCollisions.get(collisionId)!;
             collision.entityCollider.emitCollisionEnter(collision.checkedCollider);
         }
 
-        while(this._exitedCollisions.length > 0) {
-            const collisionId = this._exitedCollisions.pop()!;
+        for(const collisionId of this._exitedCollisions) {
             const collision = this._activeCollisions.get(collisionId)!;
             collision.entityCollider.emitCollisionExit(collision.checkedCollider);
             this._activeCollisions.delete(collisionId);
         }
+
+        this._enteredCollisions.clear();
+        this._exitedCollisions.clear();
     }
 
     private static checkBoundsIntersection(boundsA: IBounds, boundsB: IBounds): boolean {
@@ -137,7 +139,7 @@ export class PhysicsHandler extends ScratchSceneScript {
     }
 
     getEntitiesOfLayer(layer: Layer = Layer.DEFAULT): Array<ScratchEntity> {
-        return this._entityHandler.getEntities(this._layerMap.get(layer)!.keys() ?? []);
+        return this._entityHandler.getEntities(this._layerMap.get(layer)!.keys());
     }
 
     private start(): void {
