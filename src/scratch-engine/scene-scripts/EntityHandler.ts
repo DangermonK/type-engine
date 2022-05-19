@@ -9,7 +9,7 @@ export class EntityHandler extends ScratchSceneScript {
     private readonly _removeStack: Set<string>;
     private readonly _addStack: Array<ScratchEntity>;
 
-    private readonly _listenerFunctionMap: Map<string, Map<string, string>>;
+    private readonly _listenerFunctionMap: Map<string, Set<string>>;
 
     constructor(scene: ScratchScene) {
         super(scene);
@@ -19,7 +19,7 @@ export class EntityHandler extends ScratchSceneScript {
         this._removeStack = new Set<string>();
         this._addStack = new Array<ScratchEntity>();
 
-        this._listenerFunctionMap = new Map<string, Map<string, string>>();
+        this._listenerFunctionMap = new Map<string, Set<string>>();
     }
 
     addEntity<Type extends ScratchEntity>(entity: Type): Type {
@@ -43,9 +43,9 @@ export class EntityHandler extends ScratchSceneScript {
                 continue;
 
             if(!this._listenerFunctionMap.has(func))
-                this._listenerFunctionMap.set(func, new Map<string, string>());
+                this._listenerFunctionMap.set(func, new Set<string>());
 
-            this._listenerFunctionMap.get(func)!.set(entity.id, entity.id);
+            this._listenerFunctionMap.get(func)!.add(entity.id);
         }
     }
 
@@ -105,13 +105,13 @@ export class EntityHandler extends ScratchSceneScript {
     private start(): void {
         this.resolveStack();
 
-        for(const entityId of this._listenerFunctionMap.get('start')?.keys() || []) {
+        for(const entityId of this._listenerFunctionMap.get('start') || []) {
             this._entityMap.get(entityId)!.emit('start');
         }
     }
 
     private stop(): void {
-        for(const entityId of this._listenerFunctionMap.get('stop')?.keys() || []) {
+        for(const entityId of this._listenerFunctionMap.get('stop') || []) {
             this._entityMap.get(entityId)!.emit('stop');
         }
     }
@@ -119,13 +119,13 @@ export class EntityHandler extends ScratchSceneScript {
     private fixedUpdate(): void {
         this.resolveStack();
 
-        for(const entityId of this._listenerFunctionMap.get('fixedUpdate')?.keys() || []) {
+        for(const entityId of this._listenerFunctionMap.get('fixedUpdate') || []) {
             this._entityMap.get(entityId)!.emit('fixedUpdate');
         }
     }
 
     private update(): void {
-        for(const entityId of this._listenerFunctionMap.get('update')?.keys() || []) {
+        for(const entityId of this._listenerFunctionMap.get('update') || []) {
             this._entityMap.get(entityId)!.emit('update');
         }
     }
