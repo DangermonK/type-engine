@@ -63,7 +63,7 @@ export class HashedGrid {
         }
     }
 
-    getElementsFromHashes(hashes: Array<string>): Array<string> {
+    getElementsFromHashes(hashes: Array<string>): Set<string> {
         let arr: Array<string> = new Array<string>();
         for (const hash of hashes) {
             for(const id of this._hashedGrid.get(hash) || []) {
@@ -71,7 +71,7 @@ export class HashedGrid {
             }
         }
 
-        return [...new Set(arr)];
+        return new Set(arr);
     }
 
     getElementsFromCoordinates(x: number, y: number): Array<string> {
