@@ -14,6 +14,7 @@ export * from './scratch-engine/core/ScratchScene.abstract'
 export * from './scratch-engine/core/ScratchSceneScript.abstract'
 
 export * from './scratch-engine/components/ColliderComponent'
+export * from './scratch-engine/components/RenderComponent'
 export * from './scratch-engine/components/TransformComponent'
 
 export * from './scratch-engine/enums/Layer.enum'
@@ -25,6 +26,7 @@ export * from './scratch-engine/interfaces/IScratchSceneSettings'
 
 export * from './scratch-engine/scene-scripts/EntityFactory'
 export * from './scratch-engine/scene-scripts/EntityHandler'
+export * from './scratch-engine/scene-scripts/GraphicsHandler'
 export * from './scratch-engine/scene-scripts/PhysicsHandler'
 
 export * from './scratch-engine/utils/HashedGrid'
