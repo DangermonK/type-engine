@@ -1,4 +1,4 @@
-import { IRunnable } from "./IRunnable";
+import { IRunnable } from "./../interfaces/IRunnable";
 import { Process } from "./Process.abstract";
 import { Container } from "./Container";
 

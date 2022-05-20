@@ -1,7 +1,7 @@
 
 import { EntityFactory } from "../scene-scripts/EntityFactory";
 import { EntityHandler } from "../scene-scripts/EntityHandler";
-import { IRunnable } from "../../core/container/IRunnable";
+import { IRunnable } from "../../core/interfaces/IRunnable";
 import { ScratchSceneScript } from "./ScratchSceneScript.abstract";
 import { PhysicsHandler } from "../scene-scripts/PhysicsHandler";
 import { Processor } from "../../core/container/Processor";

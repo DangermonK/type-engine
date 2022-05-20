@@ -1,9 +1,9 @@
 
 
 export * from './core/container/Container'
-export * from './core/container/IContainer'
-export * from './core/container/IDisposable'
-export * from './core/container/IRunnable'
+export * from './core/interfaces/IContainer'
+export * from './core/interfaces/IDisposable'
+export * from './core/interfaces/IRunnable'
 export * from './core/container/Process.abstract'
 export * from './core/container/Processor'
 export * from './core/container/Scriptable.abstract'
