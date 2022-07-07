@@ -28,12 +28,12 @@ export class CircleCollider extends Collider {
 		return {
 			[BoxCollider.name]: CollisionLogic.checkBoxCircleCollision(
 				colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as BoxCollider).bounds.w,
-				colliderPosition.x + (collider as BoxCollider).bounds.h,
+				colliderPosition.y + (collider as BoxCollider).bounds.h,
 				position.x, position.y, this.radius
 			).isCollision,
 			[CircleCollider.name]: CollisionLogic.checkCircleCircleCollision(
 				position.x, position.y, this.radius,
-				colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as CircleCollider).radius
+				colliderPosition.x, colliderPosition.y, (collider as CircleCollider).radius
 			).isCollision,
 			[LineCollider.name]: CollisionLogic.checkCircleLineCollision(
 				position.x, position.y, this.radius,

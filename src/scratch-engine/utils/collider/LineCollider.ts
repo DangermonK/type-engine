@@ -30,11 +30,11 @@ export class LineCollider extends Collider {
 		return {
 			[BoxCollider.name]: CollisionLogic.checkBoxLineCollision(
 				colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as BoxCollider).bounds.w,
-				colliderPosition.x + (collider as BoxCollider).bounds.h,
+				colliderPosition.y + (collider as BoxCollider).bounds.h,
 				position.x, position.y, position.x + this.vector.x, position.y + this.vector.y
 			).isCollision,
 			[CircleCollider.name]: CollisionLogic.checkCircleLineCollision(
-				colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as CircleCollider).radius,
+				colliderPosition.x, colliderPosition.y, (collider as CircleCollider).radius,
 				position.x, position.y, position.x + this.vector.x, position.y + this.vector.y
 			).isCollision,
 			[LineCollider.name]: CollisionLogic.checkLineLineCollision(

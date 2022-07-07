@@ -21,15 +21,15 @@ export class BoxCollider extends Collider {
 		return {
 			[BoxCollider.name]: CollisionLogic.checkBoxBoxCollision(
 				colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as BoxCollider).bounds.w,
-				colliderPosition.x + (collider as BoxCollider).bounds.h,
-				position.x, position.y, position.x + this.bounds.w,position.x + this.bounds.h
+				colliderPosition.y + (collider as BoxCollider).bounds.h,
+				position.x, position.y, position.x + this.bounds.w,position.y + this.bounds.h
 			).isCollision,
 			[CircleCollider.name]: CollisionLogic.checkBoxCircleCollision(
 				position.x, position.y, position.x + this.bounds.w,position.x + this.bounds.h,
-				colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as CircleCollider).radius
+				colliderPosition.x, colliderPosition.y, (collider as CircleCollider).radius
 			).isCollision,
 			[LineCollider.name]: CollisionLogic.checkBoxLineCollision(
-				position.x, position.y, position.x + this.bounds.w,position.x + this.bounds.h,
+				position.x, position.y, position.x + this.bounds.w,position.y + this.bounds.h,
 				colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as LineCollider).vector.x,
 				colliderPosition.y + (collider as LineCollider).vector.y
 			).isCollision
