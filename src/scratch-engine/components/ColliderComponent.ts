@@ -116,6 +116,7 @@ export class ColliderComponent extends ScratchComponent {
         ctx.rect(this.bounds.x, this.bounds.y, this.bounds.w, this.bounds.h);
         ctx.stroke();
         ctx.closePath();
+        this.collider.render(ctx, this.position);
     }
 
 }

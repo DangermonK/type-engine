@@ -107,9 +107,7 @@ export class PhysicsHandler extends ScratchSceneScript {
     private resolveUncheckedCollisions(): void {
         for(const uncheckedCollision of this._activeCollisions.keys()) {
             const value = this._activeCollisions.get(uncheckedCollision)!;
-            if (!PhysicsHandler.checkBoundsIntersection(
-                value.entityCollider.bounds,
-                value.checkedCollider.bounds)) {
+            if (!value.entityCollider.isCollision(value.checkedCollider)) {
                 this._exitedCollisions.add(uncheckedCollision);
             }
         }

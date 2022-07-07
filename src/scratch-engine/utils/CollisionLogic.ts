@@ -65,9 +65,11 @@ export class CollisionLogic {
         let xTest = x2;
         let yTest = y2;
 
-        if (x2 < x1) {xTest = x1; } else if (x2 > x1 + w) {xTest = x1 + w; }
+        if (x2 < x1) {xTest = x1; }
+        else if (x2 > x1 + w) {xTest = x1 + w; }
 
-        if (y2 < y1) {yTest = y1; } else if (y2 > y1 + h) {yTest = y1 + h; }
+        if (y2 < y1) {yTest = y1; }
+        else if (y2 > y1 + h) {yTest = y1 + h; }
 
         const distance = this.getDistance(x2, y2, xTest, yTest);
 

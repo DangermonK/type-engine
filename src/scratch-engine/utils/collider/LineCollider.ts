@@ -27,22 +27,30 @@ export class LineCollider extends Collider {
 	}
 
 	checkCollision(position: IVector2, collider: Collider, colliderPosition: IVector2): boolean {
-		return {
-			[BoxCollider.name]: CollisionLogic.checkBoxLineCollision(
-				colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as BoxCollider).bounds.w,
-				colliderPosition.y + (collider as BoxCollider).bounds.h,
-				position.x, position.y, position.x + this.vector.x, position.y + this.vector.y
-			).isCollision,
-			[CircleCollider.name]: CollisionLogic.checkCircleLineCollision(
-				colliderPosition.x, colliderPosition.y, (collider as CircleCollider).radius,
-				position.x, position.y, position.x + this.vector.x, position.y + this.vector.y
-			).isCollision,
-			[LineCollider.name]: CollisionLogic.checkLineLineCollision(
-				position.x, position.y, position.x + this.vector.x, position.y + this.vector.y,
-				colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as LineCollider).vector.x,
-				colliderPosition.y + (collider as LineCollider).vector.y
-			).isCollision
-		}[collider.constructor.name];
+		switch(collider.constructor.name) {
+			case BoxCollider.name:
+				return CollisionLogic.checkBoxLineCollision(
+							colliderPosition.x, colliderPosition.y, (collider as BoxCollider).bounds.w,
+							(collider as BoxCollider).bounds.h,
+							position.x, position.y, position.x + this.vector.x, position.y + this.vector.y
+						).isCollision;
+			case CircleCollider.name:
+				return CollisionLogic.checkCircleLineCollision(
+							colliderPosition.x, colliderPosition.y, (collider as CircleCollider).radius,
+							position.x, position.y, position.x + this.vector.x, position.y + this.vector.y
+						).isCollision;
+			case LineCollider.name:
+				return CollisionLogic.checkLineLineCollision(
+							position.x, position.y, position.x + this.vector.x, position.y + this.vector.y,
+							colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as LineCollider).vector.x,
+							colliderPosition.y + (collider as LineCollider).vector.y
+						).isCollision;
+			default:
+				return false;
+		}
+	}
+
+	render(ctx: CanvasRenderingContext2D, position: IVector2): void {
 	}
 
 }

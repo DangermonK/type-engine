@@ -10,7 +10,7 @@
   "scripts": {
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts'",
     "build": "npm test && tsc",
-    "watch": "tsc-watch --onSuccess \"node dist/index.js\""
+    "watch": "tsc-watch --onSuccess tsc"
   },
   "author": "",
   "license": "ISC",

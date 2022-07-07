@@ -18,22 +18,30 @@ export class BoxCollider extends Collider {
 	}
 
 	checkCollision(position: IVector2, collider: Collider, colliderPosition: IVector2): boolean {
-		return {
-			[BoxCollider.name]: CollisionLogic.checkBoxBoxCollision(
-				colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as BoxCollider).bounds.w,
-				colliderPosition.y + (collider as BoxCollider).bounds.h,
-				position.x, position.y, position.x + this.bounds.w,position.y + this.bounds.h
-			).isCollision,
-			[CircleCollider.name]: CollisionLogic.checkBoxCircleCollision(
-				position.x, position.y, position.x + this.bounds.w,position.x + this.bounds.h,
-				colliderPosition.x, colliderPosition.y, (collider as CircleCollider).radius
-			).isCollision,
-			[LineCollider.name]: CollisionLogic.checkBoxLineCollision(
-				position.x, position.y, position.x + this.bounds.w,position.y + this.bounds.h,
-				colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as LineCollider).vector.x,
-				colliderPosition.y + (collider as LineCollider).vector.y
-			).isCollision
-		}[collider.constructor.name];
+		switch(collider.constructor.name) {
+			case BoxCollider.name:
+				return CollisionLogic.checkBoxBoxCollision(
+							colliderPosition.x, colliderPosition.y, (collider as BoxCollider).bounds.w,
+							(collider as BoxCollider).bounds.h,
+							position.x, position.y, this.bounds.w, this.bounds.h
+						).isCollision;
+			case CircleCollider.name:
+				return CollisionLogic.checkBoxCircleCollision(
+							position.x, position.y, this.bounds.w, this.bounds.h,
+							colliderPosition.x, colliderPosition.y, (collider as CircleCollider).radius
+						).isCollision;
+			case LineCollider.name:
+				return CollisionLogic.checkBoxLineCollision(
+							position.x, position.y, this.bounds.w,this.bounds.h,
+							colliderPosition.x, colliderPosition.y, colliderPosition.x + (collider as LineCollider).vector.x,
+							colliderPosition.y + (collider as LineCollider).vector.y
+						).isCollision;
+			default:
+				return false;
+		}
+	}
+
+	render(ctx: CanvasRenderingContext2D, position: IVector2): void {
 	}
 
 }
