@@ -73,28 +73,28 @@ export class PhysicsHandler extends ScratchSceneScript {
     // TODO: optimize same layer collisions
     // TODO: optimize collision checks for none moving objects
     private resolveCollisionsOnLayer(layer: Layer = Layer.DEFAULT): void {
-        const elements = this._entityHandler.getEntities(this._layerMap.get(layer)!);
+        const entities = this._entityHandler.getEntities(this._layerMap.get(layer)!);
         const compareLayers = this.container.settings.collisionRules.get(layer) || [];
 
-        for(const element of elements) {
-            const collider = element.getElement(ColliderComponent);
+        for(const entity of entities) {
+            const collider = entity.getElement(ColliderComponent);
             for(const compareLayer of compareLayers) {
-                const compareColliders = this._entityHandler.getEntities(
+                const compareEntities = this._entityHandler.getEntities(
                         this._layeredGridMap.get(compareLayer)!.getElementsFromHashes(collider.hashCoords));
-                for(const compareCollider of compareColliders) {
+                for(const compareEntity of compareEntities) {
                     // TODO: improve irrelevant checks
-                    if(element.id === compareCollider.id)
+                    if(entity.id === compareEntity.id)
                         continue;
 
-                    const collisionId = element.id + compareCollider.id;
+                    const collisionId = entity.id + compareEntity.id;
                     if(this._activeCollisions.has(collisionId))
                         continue;
 
-                    // TODO: implement collision detection for all shapes
-                    if(PhysicsHandler.checkBoundsIntersection(collider.bounds, compareCollider.getElement(ColliderComponent).bounds)) {
+                    if(PhysicsHandler.checkBoundsIntersection(collider.bounds, compareEntity.getElement(ColliderComponent).bounds)
+                        && collider.isCollision(compareEntity.getElement(ColliderComponent))) {
                         this._activeCollisions.set(collisionId, {
                             entityCollider: collider,
-                            checkedCollider: compareCollider.getElement(ColliderComponent)
+                            checkedCollider: compareEntity.getElement(ColliderComponent)
                         });
                         this._enteredCollisions.add(collisionId);
                     }

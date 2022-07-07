@@ -3,12 +3,15 @@ import { ScratchEntity } from "../core/ScratchEntity.abstract";
 import { PhysicsHandler } from "../scene-scripts/PhysicsHandler";
 import { Vector2 } from "../utils/Vector2";
 import {IBounds} from "../interfaces/IBounds";
+import { BoxCollider } from "../utils/collider/BoxCollider";
+import { Collider } from "../utils/collider/Collider.abstract";
+import { IVector2 } from "../interfaces/IVector2";
 
 
 export class ColliderComponent extends ScratchComponent {
 
-    private readonly _boundsOffset: Vector2;
-    private readonly _bounds: Vector2;
+    private _collider: Collider = new BoxCollider();
+	private _offset: Vector2;
 
     private readonly _hashCoords: Array<string>;
 
@@ -18,28 +21,40 @@ export class ColliderComponent extends ScratchComponent {
 
     constructor(entity: ScratchEntity) {
         super(entity);
-        this._boundsOffset = new Vector2();
-        this._bounds = new Vector2(1, 1);
+        this._offset = new Vector2();
 
         this._hashCoords = new Array<string>();
 
         this.setTrigger(false);
     }
 
-    setBounds(x: number, y: number, w: number, h: number): void {
-        this._bounds.x = w;
-        this._bounds.y = h;
-        this._boundsOffset.x = x;
-        this._boundsOffset.y = y;
+    setCollider(collider: Collider): void {
+        this._collider = collider;
+    }
+
+    get collider(): Collider {
+        return this._collider;
+    }
+
+    get position(): IVector2 {
+        return {
+            x: this.container.transform.position.x + this._offset.x,
+            y: this.container.transform.position.y + this._offset.y
+        }
     }
 
     get bounds(): IBounds {
         return {
-            x: this.container.transform.position.x + this._boundsOffset.x,
-            y: this.container.transform.position.y + this._boundsOffset.y,
-            w: this._bounds.x,
-            h: this._bounds.y
+            x: this.container.transform.position.x + this._offset.x + this._collider.bounds.x,
+            y: this.container.transform.position.y + this._offset.y + this._collider.bounds.y,
+            w: this._collider.bounds.w,
+            h: this._collider.bounds.h
         }
+    }
+
+    setOffset(x: number, y: number): void {
+        this._offset.x = x;
+        this._offset.y = y;
     }
 
     setTrigger(trigger: boolean): void {
@@ -70,6 +85,18 @@ export class ColliderComponent extends ScratchComponent {
         return this._hashCoords;
     }
 
+    isCollision(collider: ColliderComponent): boolean {
+        return this._collider.checkCollision(this.position, collider.collider, collider.position);
+    }
+
+    emitCollisionEnter(collider: ColliderComponent): void {
+        this.container.emit(collider._intersectionEnter, collider);
+    }
+
+    emitCollisionExit(collider: ColliderComponent): void {
+        this.container.emit(collider._intersectionExit, collider);
+    }
+
     override initialize() {
         this.container.scene.getElement(PhysicsHandler).pushCollider(this);
 
@@ -81,14 +108,6 @@ export class ColliderComponent extends ScratchComponent {
 
     override dispose() {
         this.container.scene.getElement(PhysicsHandler).removeCollider(this);
-    }
-
-    emitCollisionEnter(collider: ColliderComponent): void {
-        this.container.emit(collider._intersectionEnter, collider);
-    }
-
-    emitCollisionExit(collider: ColliderComponent): void {
-        this.container.emit(collider._intersectionExit, collider);
     }
 
     private render(ctx: CanvasRenderingContext2D): void {
