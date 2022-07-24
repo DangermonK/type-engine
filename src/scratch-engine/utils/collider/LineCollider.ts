@@ -8,7 +8,7 @@ import { Vector2 } from "../Vector2";
 
 export class LineCollider extends Collider {
 
-	private _vector: Vector2;
+	private readonly _vector: Vector2;
 
 	constructor() {
 		super();
@@ -19,7 +19,7 @@ export class LineCollider extends Collider {
 	setVector(x: number, y: number): void {
 		this._vector.x = x;
 		this._vector.y = y;
-		this.setBounds(Math.min(0, x), Math.min(0, y), Math.max(0, x), Math.max(0, y));
+		this.setBounds(Math.min(0, x), Math.min(0, y), Math.abs(x), Math.abs(y));
 	}
 
 	get vector(): IVector2 {
@@ -51,6 +51,12 @@ export class LineCollider extends Collider {
 	}
 
 	render(ctx: CanvasRenderingContext2D, position: IVector2): void {
+		ctx.strokeStyle = '#f00';
+		ctx.beginPath();
+		ctx.moveTo(position.x, position.y);
+		ctx.lineTo(position.x + this.vector.x, position.y + this.vector.y);
+		ctx.stroke();
+		ctx.closePath();
 	}
 
 }

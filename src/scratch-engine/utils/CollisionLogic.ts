@@ -26,7 +26,8 @@ export class CollisionLogic {
     }
 
     static checkCircleLineCollision(x1: number, y1: number, r: number, x2: number, y2: number, x3: number, y3: number): Collision {
-        if (!this.checkBoxBoxCollision(x2, y2, x3, y3, x1 - r, y1 - r, r * 2, r * 2).isCollision) {
+        if (!this.checkBoxBoxCollision(Math.min(x2, x3), Math.min(y2, y3), Math.abs(x2 - x3), Math.abs(y2 -  y3),
+                                    x1 - r, y1 - r, r * 2, r * 2).isCollision) {
             return { isCollision: false };
         }
 
