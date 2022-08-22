@@ -26,11 +26,6 @@ export class CollisionLogic {
     }
 
     static checkCircleLineCollision(x1: number, y1: number, r: number, x2: number, y2: number, x3: number, y3: number): Collision {
-        if (!this.checkBoxBoxCollision(Math.min(x2, x3), Math.min(y2, y3), Math.abs(x2 - x3), Math.abs(y2 -  y3),
-                                    x1 - r, y1 - r, r * 2, r * 2).isCollision) {
-            return { isCollision: false };
-        }
-
         if (this.checkCircleCircleCollision(x1, y1, r, x2, y2, 0).isCollision ||
             this.checkCircleCircleCollision(x1, y1, r, x3, y3, 0).isCollision) {
             return { isCollision: true };
@@ -59,10 +54,6 @@ export class CollisionLogic {
     }
 
     static checkBoxCircleCollision(x1: number, y1: number, w: number, h: number, x2: number, y2: number, r: number): Collision {
-        if (!this.checkBoxBoxCollision(x1, y1, w, h, x2 - r, y2 - r, r * 2, r * 2).isCollision) {
-            return { isCollision: false };
-        }
-
         let xTest = x2;
         let yTest = y2;
 
@@ -84,10 +75,6 @@ export class CollisionLogic {
     }
 
     static checkLineLineCollision(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, x4: number, y4: number): Collision {
-        if (!this.checkBoxBoxCollision(x1, y1, x2, y2, x3, y3, x4, y4).isCollision) {
-            return { isCollision: false };
-        }
-
         const uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
         const uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
 
@@ -101,10 +88,6 @@ export class CollisionLogic {
     }
 
     static checkBoxLineCollision(x1: number, y1: number, w: number, h: number, x2: number, y2: number, x3: number, y3: number): Collision {
-        if (!this.checkBoxBoxCollision(x1, y1, w, h, Math.min(x2, x3), Math.min(y2, y3), Math.abs(x2 - x3), Math.abs(y2 - y3)).isCollision) {
-            return { isCollision: false };
-        }
-
         const top = this.checkLineLineCollision(x1, y1, x1 + w, y1, x2, y2, x3, y3);
         const left = this.checkLineLineCollision(x1, y1, x1, y1 + h, x2, y2, x3, y3);
         const right = this.checkLineLineCollision(x1 + w, y1, x1 + w, y1 + h, x2, y2, x3, y3);
