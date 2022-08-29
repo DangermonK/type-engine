@@ -44,6 +44,12 @@ export class Vector2 implements IVector2 {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
 
+    lerp(target: Vector2, time: number): void {
+        const diffx = this.x - target.x;
+        const diffy = this.y - target.y;
+        this.set(this.x + diffx * time, this.y + diffy * time);
+    }
+
     negated(): Vector2 {
         return new Vector2(-this.x, -this.y);
     }
