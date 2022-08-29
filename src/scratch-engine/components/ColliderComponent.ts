@@ -2,10 +2,11 @@ import { ScratchComponent } from "../core/ScratchComponent.abstract";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
 import { PhysicsHandler } from "../scene-scripts/PhysicsHandler";
 import { Vector2 } from "../utils/Vector2";
-import {IBounds} from "../interfaces/IBounds";
+import { IBounds } from "../interfaces/IBounds";
 import { BoxCollider } from "../utils/collider/BoxCollider";
 import { Collider } from "../utils/collider/Collider.abstract";
 import { IVector2 } from "../interfaces/IVector2";
+import { TransformComponent } from "./TransformComponent";
 
 
 export class ColliderComponent extends ScratchComponent {
@@ -26,6 +27,8 @@ export class ColliderComponent extends ScratchComponent {
         this._hashCoords = new Array<string>();
 
         this.setTrigger(false);
+
+        this.container.requireType(TransformComponent);
     }
 
     setCollider(collider: Collider): void {
@@ -83,6 +86,12 @@ export class ColliderComponent extends ScratchComponent {
 
     get hashCoords(): Array<string> {
         return this._hashCoords;
+    }
+
+    getHashCoords(): Array<any> {
+        return this._hashCoords.map((hash) => {
+            return hash.split(':').map((value) => {return parseInt(value)});
+        });
     }
 
     isCollision(collider: ColliderComponent): boolean {
