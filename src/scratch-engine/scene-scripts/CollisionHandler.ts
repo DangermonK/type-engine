@@ -8,7 +8,7 @@ import {Layer} from "../enums/Layer.enum";
 import {ICollision} from "../interfaces/ICollision";
 import {ScratchEntity} from "../core/ScratchEntity.abstract";
 
-export class PhysicsHandler extends ScratchSceneScript {
+export class CollisionHandler extends ScratchSceneScript {
 
     private readonly _entityHandler: EntityHandler;
 
@@ -90,7 +90,7 @@ export class PhysicsHandler extends ScratchSceneScript {
                     if(this._activeCollisions.has(collisionId))
                         continue;
 
-                    if(PhysicsHandler.checkBoundsIntersection(collider.bounds, compareEntity.getElement(ColliderComponent).bounds)
+                    if(CollisionHandler.checkBoundsIntersection(collider.bounds, compareEntity.getElement(ColliderComponent).bounds)
                         && collider.isCollision(compareEntity.getElement(ColliderComponent))) {
                         this._activeCollisions.set(collisionId, {
                             entityCollider: collider,

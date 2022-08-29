@@ -1,6 +1,6 @@
 import { ScratchComponent } from "../core/ScratchComponent.abstract";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
-import { PhysicsHandler } from "../scene-scripts/PhysicsHandler";
+import { CollisionHandler } from "../scene-scripts/CollisionHandler";
 import { Vector2 } from "../utils/Vector2";
 import { IBounds } from "../interfaces/IBounds";
 import { BoxCollider } from "../utils/collider/BoxCollider";
@@ -107,7 +107,7 @@ export class ColliderComponent extends ScratchComponent {
     }
 
     override initialize() {
-        this.container.scene.getElement(PhysicsHandler).pushCollider(this);
+        this.container.scene.getElement(CollisionHandler).pushCollider(this);
 
         this.container.addListener('onCollisionEnter');
         this.container.addListener('onCollisionExit');
@@ -116,7 +116,7 @@ export class ColliderComponent extends ScratchComponent {
     }
 
     override dispose() {
-        this.container.scene.getElement(PhysicsHandler).removeCollider(this);
+        this.container.scene.getElement(CollisionHandler).removeCollider(this);
     }
 
     private render(ctx: CanvasRenderingContext2D): void {

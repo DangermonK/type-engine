@@ -28,7 +28,7 @@ export * from './scratch-engine/interfaces/IScratchSceneSettings'
 export * from './scratch-engine/scene-scripts/EntityFactory'
 export * from './scratch-engine/scene-scripts/EntityHandler'
 export * from './scratch-engine/scene-scripts/GraphicsHandler'
-export * from './scratch-engine/scene-scripts/PhysicsHandler'
+export * from './scratch-engine/scene-scripts/CollisionHandler'
 
 export * from './scratch-engine/utils/HashedGrid'
 export * from './scratch-engine/utils/ObjectMap'
