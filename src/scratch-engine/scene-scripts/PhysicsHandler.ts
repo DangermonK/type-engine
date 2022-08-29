@@ -103,6 +103,7 @@ export class PhysicsHandler extends ScratchSceneScript {
         }
     }
 
+    // resolves collisions from exited hash coords
     // FIXME: dont iterate through all collisions (maybe solve collisions via ColliderComponent)
     private resolveUncheckedCollisions(): void {
         for(const uncheckedCollision of this._activeCollisions.keys()) {
@@ -133,7 +134,7 @@ export class PhysicsHandler extends ScratchSceneScript {
         return boundsA.x < boundsB.x + boundsB.w &&
                boundsA.y < boundsB.y + boundsB.h &&
                boundsA.x > boundsB.x - boundsA.w &&
-               boundsA.y > boundsB.y - boundsA.w;
+               boundsA.y > boundsB.y - boundsA.h;
     }
 
     getEntitiesOfLayer(layer: Layer = Layer.DEFAULT): Array<ScratchEntity> {
