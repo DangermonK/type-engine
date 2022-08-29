@@ -1,7 +1,7 @@
 import { Collider } from "./Collider.abstract";
 import { CircleCollider } from "./CircleCollider";
 import { IVector2 } from "../../interfaces/IVector2";
-import { Collision, CollisionLogic } from "../CollisionLogic";
+import { CollisionLogic } from "../CollisionLogic";
 import { LineCollider } from "./LineCollider";
 
 
@@ -10,7 +10,7 @@ export class BoxCollider extends Collider {
 	constructor(width: number = 1, height: number = 1) {
 		super();
 
-		this.setBoxSize(1, 1);
+		this.setBoxSize(width, height);
 	}
 
 	setBoxSize(width: number, height: number): void {
