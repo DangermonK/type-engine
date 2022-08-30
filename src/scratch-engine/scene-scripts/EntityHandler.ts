@@ -91,7 +91,7 @@ export class EntityHandler extends ScratchSceneScript {
 
     getEntitiesOfType<Type extends ScratchEntity>(type: new(...args: Array<any>) => Type): Array<Type> {
         const output: Array<Type> = new Array<Type>();
-        for(const entity of this._entityMap) {
+        for(const entity of this._entityMap.values()) {
             if(entity instanceof type)
                 output.push(entity);
         }
