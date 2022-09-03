@@ -10,10 +10,11 @@ export class LineCollider extends Collider {
 
 	private readonly _vector: Vector2;
 
-	constructor() {
+	constructor(x: number = 1, y: number = 1) {
 		super();
 
-		this._vector = new Vector2(1, 1);
+		this._vector = new Vector2();
+		this.setVector(x, y);
 	}
 
 	setVector(x: number, y: number): void {

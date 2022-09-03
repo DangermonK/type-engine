@@ -1,12 +1,12 @@
-import {ScratchSceneScript} from "../core/ScratchSceneScript.abstract";
-import {ScratchScene} from "../core/ScratchScene.abstract";
-import {EntityHandler} from "./EntityHandler";
-import {HashedGrid} from "../utils/HashedGrid";
-import {ColliderComponent} from "../components/ColliderComponent";
-import {IBounds} from "../interfaces/IBounds";
-import {Layer} from "../enums/Layer.enum";
-import {ICollision} from "../interfaces/ICollision";
-import {ScratchEntity} from "../core/ScratchEntity.abstract";
+import { ScratchSceneScript } from "../core/ScratchSceneScript.abstract";
+import { ScratchScene } from "../core/ScratchScene.abstract";
+import { EntityHandler } from "./EntityHandler";
+import { HashedGrid } from "../utils/HashedGrid";
+import { ColliderComponent } from "../components/ColliderComponent";
+import { IBounds } from "../interfaces/IBounds";
+import { Layer } from "../enums/Layer.enum";
+import { ICollision } from "../interfaces/ICollision";
+import { ScratchEntity } from "../core/ScratchEntity.abstract";
 
 export class CollisionHandler extends ScratchSceneScript {
 

@@ -45,8 +45,8 @@ export class Vector2 implements IVector2 {
     }
 
     lerp(target: Vector2, time: number): void {
-        const diffx = this.x - target.x;
-        const diffy = this.y - target.y;
+        const diffx = target.x - this.x;
+        const diffy = target.y - this.y;
         this.set(this.x + diffx * time, this.y + diffy * time);
     }
 
