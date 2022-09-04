@@ -40,6 +40,12 @@ export class Vector2 implements IVector2 {
         );
     }
 
+    stretch(length: number) {
+        this.normalize();
+        this.x *= length;
+        this.y *= length;
+    }
+
     magnitude(): number {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
