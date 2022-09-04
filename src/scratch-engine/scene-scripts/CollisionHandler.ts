@@ -82,6 +82,7 @@ export class CollisionHandler extends ScratchSceneScript {
                 const compareEntities = this._entityHandler.getEntities(
                         this._layeredGridMap.get(compareLayer)!.getElementsFromHashes(collider.hashCoords));
                 for(const compareEntity of compareEntities) {
+
                     // TODO: improve irrelevant checks
                     if(entity.id === compareEntity.id)
                         continue;
@@ -90,14 +91,19 @@ export class CollisionHandler extends ScratchSceneScript {
                     if(this._activeCollisions.has(collisionId))
                         continue;
 
-                    if(CollisionHandler.checkBoundsIntersection(collider.bounds, compareEntity.getElement(ColliderComponent).bounds)
-                        && collider.isCollision(compareEntity.getElement(ColliderComponent))) {
-                        this._activeCollisions.set(collisionId, {
-                            entityCollider: collider,
-                            checkedCollider: compareEntity.getElement(ColliderComponent)
-                        });
-                        this._enteredCollisions.add(collisionId);
-                    }
+                    if(!CollisionHandler.checkBoundsIntersection(collider.bounds, compareEntity.getElement(ColliderComponent).bounds))
+                        continue;
+
+                    const collision = collider.isCollision(compareEntity.getElement(ColliderComponent));
+                    if(!collision)
+                        continue;
+
+                    this._activeCollisions.set(collisionId, {
+                        entityCollider: collider,
+                        checkedCollider: compareEntity.getElement(ColliderComponent)
+                    });
+                    this._enteredCollisions.add(collisionId);
+
                 }
             }
         }
