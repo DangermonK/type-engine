@@ -18,6 +18,7 @@ export class CollisionHandler extends ScratchSceneScript {
     private readonly _activeCollisions: Map<string, ICollision>;
     private readonly _enteredCollisions: Set<string>;
     private readonly _exitedCollisions: Set<string>;
+    private readonly _stayedCollisions: Set<string>;
 
     constructor(scene: ScratchScene) {
         super(scene);
@@ -29,6 +30,7 @@ export class CollisionHandler extends ScratchSceneScript {
         this._activeCollisions = new Map<string, ICollision>();
         this._enteredCollisions = new Set<string>();
         this._exitedCollisions = new Set<string>();
+        this._stayedCollisions = new Set<string>();
     }
 
     pushCollider(collider: ColliderComponent): void {
@@ -116,6 +118,8 @@ export class CollisionHandler extends ScratchSceneScript {
             const value = this._activeCollisions.get(uncheckedCollision)!;
             if (!value.entityCollider.isCollision(value.checkedCollider)) {
                 this._exitedCollisions.add(uncheckedCollision);
+            } else {
+                this._stayedCollisions.add(uncheckedCollision);
             }
         }
     }
@@ -126,6 +130,11 @@ export class CollisionHandler extends ScratchSceneScript {
             collision.entityCollider.emitCollisionEnter(collision.checkedCollider);
         }
 
+        for(const collisionId of this._stayedCollisions) {
+            const collision = this._activeCollisions.get(collisionId)!;
+            collision.entityCollider.emitCollisionStay(collision.checkedCollider);
+        }
+
         for(const collisionId of this._exitedCollisions) {
             const collision = this._activeCollisions.get(collisionId)!;
             collision.entityCollider.emitCollisionExit(collision.checkedCollider);
@@ -133,6 +142,7 @@ export class CollisionHandler extends ScratchSceneScript {
         }
 
         this._enteredCollisions.clear();
+        this._stayedCollisions.clear();
         this._exitedCollisions.clear();
     }
 
