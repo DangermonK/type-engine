@@ -1,6 +1,12 @@
 import {ColliderComponent} from "../components/ColliderComponent";
+import { IHitInfo } from "../utils/IHitInfo";
+
+export interface IActiveCollision {
+    sourceCollider: ColliderComponent,
+    collision: ICollision
+}
 
 export interface ICollision {
-    entityCollider: ColliderComponent,
-    checkedCollider: ColliderComponent
+    collider: ColliderComponent,
+    hitInfo?: IHitInfo
 }

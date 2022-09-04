@@ -7,6 +7,8 @@ import { BoxCollider } from "../utils/collider/BoxCollider";
 import { Collider } from "../utils/collider/Collider.abstract";
 import { IVector2 } from "../interfaces/IVector2";
 import { TransformComponent } from "./TransformComponent";
+import { ICollisionInfo } from "../utils/IHitInfo";
+import { ICollision } from "../interfaces/ICollision";
 
 
 export class ColliderComponent extends ScratchComponent {
@@ -97,20 +99,20 @@ export class ColliderComponent extends ScratchComponent {
         });
     }
 
-    isCollision(collider: ColliderComponent): boolean {
+    isCollision(collider: ColliderComponent): ICollisionInfo {
         return this._collider.checkCollision(this.position, collider.collider, collider.position);
     }
 
-    emitCollisionEnter(collider: ColliderComponent): void {
-        this.container.emit(collider._intersectionEnter, collider);
+    emitCollisionEnter(collision: ICollision): void {
+        this.container.emit(collision.collider._intersectionEnter, collision);
     }
 
-    emitCollisionStay(collider: ColliderComponent): void {
-        this.container.emit(collider._intersectionStay, collider);
+    emitCollisionStay(collision: ICollision): void {
+        this.container.emit(collision.collider._intersectionStay, collision);
     }
 
-    emitCollisionExit(collider: ColliderComponent): void {
-        this.container.emit(collider._intersectionExit, collider);
+    emitCollisionExit(collision: ICollision): void {
+        this.container.emit(collision.collider._intersectionExit, collision);
     }
 
     override initialize() {
