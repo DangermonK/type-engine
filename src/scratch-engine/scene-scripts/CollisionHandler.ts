@@ -5,7 +5,7 @@ import { HashedGrid } from "../utils/HashedGrid";
 import { ColliderComponent } from "../components/ColliderComponent";
 import { IBounds } from "../interfaces/IBounds";
 import { Layer } from "../enums/Layer.enum";
-import { ICollision } from "../interfaces/ICollision";
+import { IActiveCollision, ICollision } from "../interfaces/ICollision";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
 
 export class CollisionHandler extends ScratchSceneScript {
@@ -15,7 +15,7 @@ export class CollisionHandler extends ScratchSceneScript {
     private readonly _layerMap: Map<Layer, Set<string>>;
     private readonly _layeredGridMap: Map<Layer, HashedGrid>;
 
-    private readonly _activeCollisions: Map<string, ICollision>;
+    private readonly _activeCollisions: Map<string, IActiveCollision>;
     private readonly _enteredCollisions: Set<string>;
     private readonly _exitedCollisions: Set<string>;
     private readonly _stayedCollisions: Set<string>;
@@ -27,7 +27,7 @@ export class CollisionHandler extends ScratchSceneScript {
         this._layerMap = new Map<Layer, Set<string>>();
         this._layeredGridMap = new Map<Layer, HashedGrid>();
 
-        this._activeCollisions = new Map<string, ICollision>();
+        this._activeCollisions = new Map<string, IActiveCollision>();
         this._enteredCollisions = new Set<string>();
         this._exitedCollisions = new Set<string>();
         this._stayedCollisions = new Set<string>();
@@ -97,15 +97,17 @@ export class CollisionHandler extends ScratchSceneScript {
                         continue;
 
                     const collision = collider.isCollision(compareEntity.getElement(ColliderComponent));
-                    if(!collision)
+                    if(!collision.isCollision)
                         continue;
 
                     this._activeCollisions.set(collisionId, {
-                        entityCollider: collider,
-                        checkedCollider: compareEntity.getElement(ColliderComponent)
+                        sourceCollider: collider,
+                        collision: {
+                            collider: compareEntity.getElement(ColliderComponent),
+                            hitInfo: collision.hitInfo
+                        }
                     });
                     this._enteredCollisions.add(collisionId);
-
                 }
             }
         }
@@ -116,10 +118,12 @@ export class CollisionHandler extends ScratchSceneScript {
     private resolveUncheckedCollisions(): void {
         for(const uncheckedCollision of this._activeCollisions.keys()) {
             const value = this._activeCollisions.get(uncheckedCollision)!;
-            if (!value.entityCollider.isCollision(value.checkedCollider)) {
+            const collision = value.sourceCollider.isCollision(value.collision.collider);
+            if (!collision.isCollision) {
                 this._exitedCollisions.add(uncheckedCollision);
             } else {
                 this._stayedCollisions.add(uncheckedCollision);
+                this._activeCollisions.get(uncheckedCollision)!.collision.hitInfo = collision.hitInfo;
             }
         }
     }
@@ -127,17 +131,17 @@ export class CollisionHandler extends ScratchSceneScript {
     private emitCurrentCollisions(): void {
         for(const collisionId of this._enteredCollisions) {
             const collision = this._activeCollisions.get(collisionId)!;
-            collision.entityCollider.emitCollisionEnter(collision.checkedCollider);
+            collision.sourceCollider.emitCollisionEnter(collision.collision);
         }
 
         for(const collisionId of this._stayedCollisions) {
             const collision = this._activeCollisions.get(collisionId)!;
-            collision.entityCollider.emitCollisionStay(collision.checkedCollider);
+            collision.sourceCollider.emitCollisionStay(collision.collision);
         }
 
         for(const collisionId of this._exitedCollisions) {
             const collision = this._activeCollisions.get(collisionId)!;
-            collision.entityCollider.emitCollisionExit(collision.checkedCollider);
+            collision.sourceCollider.emitCollisionExit(collision.collision);
             this._activeCollisions.delete(collisionId);
         }
 
