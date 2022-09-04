@@ -4,67 +4,137 @@ import { ScratchEntity } from "../core/ScratchEntity.abstract";
 
 export class EntityHandler extends ScratchSceneScript {
 
-    private readonly _layerMap: Map<string, Array<string>>;
     private readonly _entityMap: Map<string, ScratchEntity>;
+
+    private readonly _removeStack: Set<string>;
+    private readonly _addStack: Array<ScratchEntity>;
+
+    private readonly _listenerFunctionMap: Map<string, Set<string>>;
 
     constructor(scene: ScratchScene) {
         super(scene);
 
         this._entityMap = new Map<string, ScratchEntity>();
-        this._layerMap = new Map<string, Array<string>>();
+
+        this._removeStack = new Set<string>();
+        this._addStack = new Array<ScratchEntity>();
+
+        this._listenerFunctionMap = new Map<string, Set<string>>();
     }
 
     addEntity<Type extends ScratchEntity>(entity: Type): Type {
-        entity.initialize();
-        this._entityMap.set(entity.id, entity);
-
-        if(!this._layerMap.has(entity.options.layer))
-            this._layerMap.set(entity.options.layer, new Array<string>());
-
-        this._layerMap.get(entity.options.layer)!.push(entity.id);
+        this._addStack.push(entity);
 
         return entity;
     }
 
     removeEntity(entity: ScratchEntity): void {
-        entity.dispose();
-        this._entityMap.delete(entity.id);
-
-        const index = this._layerMap.get(entity.options.layer)!.indexOf(entity.id);
-        if(index !== -1)
-            this._layerMap.get(entity.options.layer)!.splice(index, 1);
+        this._removeStack.add(entity.id);
     }
 
-    getEntitiesOfLayer(layer: string): Array<ScratchEntity> {
-        const flaggedEntities = this._layerMap.get(layer) || [];
+    resolveStack(): void {
+        this.resolveRemoveStack();
+        this.resolveAddStack();
+    }
 
-        const entities: Array<ScratchEntity> = new Array<ScratchEntity>();
-        for(let i = 0; i < flaggedEntities.length; i++) {
-            entities.push(this._entityMap.get(flaggedEntities[i])!);
+    private addEntityListenerFunctions(entity: ScratchEntity): void {
+        for(const func of ['update', 'fixedUpdate', 'start', 'stop']) {
+            if(!entity.hasListener(func))
+                continue;
+
+            if(!this._listenerFunctionMap.has(func))
+                this._listenerFunctionMap.set(func, new Set<string>());
+
+            this._listenerFunctionMap.get(func)!.add(entity.id);
         }
-        return entities;
     }
 
-    getEntities(ids: Array<string>): Array<ScratchEntity> {
+    private removeEntityListenerFunctions(entity: ScratchEntity): void {
+        for(const func of ['update', 'fixedUpdate', 'start', 'stop']) {
+            if(!entity.hasListener(func))
+                continue;
+
+            this._listenerFunctionMap.get(func)!.delete(entity.id);
+        }
+    }
+
+    private resolveRemoveStack(): void {
+        for(const id of this._removeStack) {
+            const entity = this._entityMap.get(id)!;
+
+            entity.dispose();
+            this._entityMap.delete(entity.id);
+
+            this.removeEntityListenerFunctions(entity);
+        }
+        this._removeStack.clear();
+    }
+
+    private resolveAddStack(): void {
+        while(this._addStack.length > 0) {
+            const entity = this._addStack.pop()!;
+
+            entity.initialize();
+            this._entityMap.set(entity.id, entity);
+
+            this.addEntityListenerFunctions(entity);
+        }
+    }
+
+    getEntities(ids: Set<string>): Array<ScratchEntity> {
         const arr: Array<ScratchEntity> = new Array<ScratchEntity>();
-        for(let i = 0; i < ids.length; i++) {
-            arr.push(this._entityMap.get(ids[i])!);
+        for(const id of ids) {
+            arr.push(this._entityMap.get(id)!);
         }
         return arr;
     }
 
     getEntitiesOfType<Type extends ScratchEntity>(type: new(...args: Array<any>) => Type): Array<Type> {
-        return this.entities.filter(entity => entity instanceof type) as Array<Type>;
+        const output: Array<Type> = new Array<Type>();
+        for(const entity of this._entityMap.values()) {
+            if(entity instanceof type)
+                output.push(entity);
+        }
+        return output;
     }
 
-    get entities(): Array<ScratchEntity> {
-        return [...this._entityMap.values()];
+    get entities(): IterableIterator<ScratchEntity> {
+        return this._entityMap.values();
+    }
+
+    private start(): void {
+        this.resolveStack();
+
+        for(const entityId of this._listenerFunctionMap.get('start') || []) {
+            this._entityMap.get(entityId)!.emit('start');
+        }
+    }
+
+    private stop(): void {
+        for(const entityId of this._listenerFunctionMap.get('stop') || []) {
+            this._entityMap.get(entityId)!.emit('stop');
+        }
+    }
+
+    private fixedUpdate(): void {
+        this.resolveStack();
+
+        for(const entityId of this._listenerFunctionMap.get('fixedUpdate') || []) {
+            this._entityMap.get(entityId)!.emit('fixedUpdate');
+        }
+    }
+
+    private update(): void {
+        for(const entityId of this._listenerFunctionMap.get('update') || []) {
+            this._entityMap.get(entityId)!.emit('update');
+        }
     }
 
     dispose(): void {
     }
 
     initialize(): void {
+        this.resolveStack();
     }
 
 }

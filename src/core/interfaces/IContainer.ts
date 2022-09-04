@@ -1,4 +1,4 @@
-import { Scriptable } from "./Scriptable.abstract";
+import { Scriptable } from "../container/Scriptable.abstract";
 
 export interface IContainer<Type extends Scriptable<any>> {
 

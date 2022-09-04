@@ -1,6 +1,6 @@
 import { Scriptable } from "./Scriptable.abstract";
-import { IContainer } from "./IContainer";
-import { IDisposable } from "./IDisposable";
+import { IContainer } from "../interfaces/IContainer";
+import { IDisposable } from "./../interfaces/IDisposable";
 import { ObjectMap } from "../../scratch-engine/utils/ObjectMap";
 
 export class Container<Type extends Scriptable<any>> implements IContainer<Type>, IDisposable {
@@ -27,7 +27,6 @@ export class Container<Type extends Scriptable<any>> implements IContainer<Type>
 
     addElement<Element extends Type>(element: Element): Element {
         this._scriptMap.set(element);
-        element.initialize();
         return element;
     }
 
@@ -44,20 +43,26 @@ export class Container<Type extends Scriptable<any>> implements IContainer<Type>
     }
 
     initialize(): void {
+        this._scriptMap.all.forEach((script: Scriptable<any>) => script.initialize());
     }
 
     dispose(): void {
         this._scriptMap.all.forEach((script: Scriptable<any>) => script.dispose());
     }
 
+    hasListener(method: string): boolean {
+        return this._listenerMap.has(method);
+    }
+
     addListener(method: string): void {
         for(const script of this.scripts) {
-            if(typeof (script as any)[method] === 'function') {
-                if(!this._listenerMap.has(method))
-                    this._listenerMap.set(method, new Array<(data?: any) => void>());
+            if(typeof (script as any)[method] !== 'function')
+                continue;
 
-                this._listenerMap.get(method)!.push((script as any)[method].bind(script));
-            }
+            if(!this._listenerMap.has(method))
+                this._listenerMap.set(method, new Array<(data?: any) => void>());
+
+            this._listenerMap.get(method)!.push((script as any)[method].bind(script));
         }
     }
 

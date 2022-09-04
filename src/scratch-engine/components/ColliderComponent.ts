@@ -1,45 +1,66 @@
 import { ScratchComponent } from "../core/ScratchComponent.abstract";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
-import { PhysicsHandler } from "../scene-scripts/PhysicsHandler";
+import { CollisionHandler } from "../scene-scripts/CollisionHandler";
 import { Vector2 } from "../utils/Vector2";
-import { IBounds } from "../utils/IBounds";
+import { IBounds } from "../interfaces/IBounds";
+import { BoxCollider } from "../utils/collider/BoxCollider";
+import { Collider } from "../utils/collider/Collider.abstract";
+import { IVector2 } from "../interfaces/IVector2";
+import { TransformComponent } from "./TransformComponent";
+import { ICollisionInfo } from "../utils/IHitInfo";
+import { ICollision } from "../interfaces/ICollision";
 
 
 export class ColliderComponent extends ScratchComponent {
 
-    private readonly _boundsOffset: Vector2;
-    private readonly _bounds: Vector2;
+    private _collider: Collider = new BoxCollider();
+	private _offset: Vector2;
 
     private readonly _hashCoords: Array<string>;
 
     private _isTrigger!: boolean;
     private _intersectionEnter!: string;
     private _intersectionExit!: string;
+    private _intersectionStay!: string;
 
     constructor(entity: ScratchEntity) {
         super(entity);
-        this._boundsOffset = new Vector2();
-        this._bounds = new Vector2(1, 1);
+        this._offset = new Vector2();
 
         this._hashCoords = new Array<string>();
 
         this.setTrigger(false);
+
+        this.container.requireType(TransformComponent);
     }
 
-    setBounds(x: number, y: number, w: number, h: number): void {
-        this._bounds.x = w;
-        this._bounds.y = h;
-        this._boundsOffset.x = x;
-        this._boundsOffset.y = y;
+    setCollider(collider: Collider): void {
+        this._collider = collider;
+    }
+
+    get collider(): Collider {
+        return this._collider;
+    }
+
+    get position(): IVector2 {
+        return {
+            x: this.container.transform.position.x + this._offset.x,
+            y: this.container.transform.position.y + this._offset.y
+        }
     }
 
     get bounds(): IBounds {
         return {
-            x: this.container.transform.position.x + this._boundsOffset.x,
-            y: this.container.transform.position.y + this._boundsOffset.y,
-            w: this._bounds.x,
-            h: this._bounds.y
+            x: this.container.transform.position.x + this._offset.x + this._collider.bounds.x,
+            y: this.container.transform.position.y + this._offset.y + this._collider.bounds.y,
+            w: this._collider.bounds.w,
+            h: this._collider.bounds.h
         }
+    }
+
+    setOffset(x: number, y: number): void {
+        this._offset.x = x;
+        this._offset.y = y;
     }
 
     setTrigger(trigger: boolean): void {
@@ -48,9 +69,11 @@ export class ColliderComponent extends ScratchComponent {
         if(trigger) {
             this._intersectionEnter = 'onTriggerEnter';
             this._intersectionExit = 'onTriggerExit';
+            this._intersectionStay = 'onTriggerStay';
         } else {
             this._intersectionEnter = 'onCollisionEnter';
             this._intersectionExit = 'onCollisionExit';
+            this._intersectionStay = 'onCollisionStay';
         }
     }
 
@@ -70,33 +93,50 @@ export class ColliderComponent extends ScratchComponent {
         return this._hashCoords;
     }
 
+    getHashCoords(): Array<any> {
+        return this._hashCoords.map((hash) => {
+            return hash.split(':').map((value) => {return parseInt(value)});
+        });
+    }
+
+    isCollision(collider: ColliderComponent): ICollisionInfo {
+        return this._collider.checkCollision(this.position, collider.collider, collider.position);
+    }
+
+    emitCollisionEnter(collision: ICollision): void {
+        this.container.emit(collision.collider._intersectionEnter, collision);
+    }
+
+    emitCollisionStay(collision: ICollision): void {
+        this.container.emit(collision.collider._intersectionStay, collision);
+    }
+
+    emitCollisionExit(collision: ICollision): void {
+        this.container.emit(collision.collider._intersectionExit, collision);
+    }
+
     override initialize() {
-        this.container.scene.getElement(PhysicsHandler).pushCollider(this);
+        this.container.scene.getElement(CollisionHandler).pushCollider(this);
+
+        this.container.addListener('onCollisionEnter');
+        this.container.addListener('onCollisionExit');
+        this.container.addListener('onCollisionStay');
+        this.container.addListener('onTriggerEnter');
+        this.container.addListener('onTriggerExit');
+        this.container.addListener('onTriggerStay');
     }
 
     override dispose() {
-        this.container.scene.getElement(PhysicsHandler).removeCollider(this);
+        this.container.scene.getElement(CollisionHandler).removeCollider(this);
     }
 
-    emitCollisionEnter(collider: ColliderComponent): void {
-        this.container.emit(collider._intersectionEnter, collider);
+    private render(ctx: CanvasRenderingContext2D): void {
+        ctx.strokeStyle = '#0f0';
+        ctx.beginPath();
+        ctx.rect(this.bounds.x, this.bounds.y, this.bounds.w, this.bounds.h);
+        ctx.stroke();
+        ctx.closePath();
+        this.collider.render(ctx, this.position);
     }
-
-    emitCollisionExit(collider: ColliderComponent): void {
-        this.container.emit(collider._intersectionExit, collider);
-    }
-
-    fixedUpdate(): void {}
-
-    start(): void {
-        this.container.addListener('onCollisionEnter');
-        this.container.addListener('onCollisionExit');
-        this.container.addListener('onTriggerEnter');
-        this.container.addListener('onTriggerExit');
-    }
-
-    stop(): void {}
-
-    update(): void {}
 
 }

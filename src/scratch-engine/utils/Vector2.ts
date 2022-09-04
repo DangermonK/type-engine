@@ -1,12 +1,12 @@
+import { IVector2 } from "../interfaces/IVector2";
 
 
-
-export class Vector2 {
+export class Vector2 implements IVector2 {
 
     public x: number;
     public y: number;
 
-    constructor(x = 0, y= 0) {
+    constructor(x: number = 0, y: number = 0) {
         this.x = x;
         this.y = y;
     }
@@ -40,8 +40,20 @@ export class Vector2 {
         );
     }
 
+    stretch(length: number) {
+        this.normalize();
+        this.x *= length;
+        this.y *= length;
+    }
+
     magnitude(): number {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+    }
+
+    lerp(target: Vector2, time: number): void {
+        const diffx = target.x - this.x;
+        const diffy = target.y - this.y;
+        this.set(this.x + diffx * time, this.y + diffy * time);
     }
 
     negated(): Vector2 {
