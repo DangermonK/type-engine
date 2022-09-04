@@ -19,6 +19,7 @@ export class ColliderComponent extends ScratchComponent {
     private _isTrigger!: boolean;
     private _intersectionEnter!: string;
     private _intersectionExit!: string;
+    private _intersectionStay!: string;
 
     constructor(entity: ScratchEntity) {
         super(entity);
@@ -66,9 +67,11 @@ export class ColliderComponent extends ScratchComponent {
         if(trigger) {
             this._intersectionEnter = 'onTriggerEnter';
             this._intersectionExit = 'onTriggerExit';
+            this._intersectionStay = 'onTriggerStay';
         } else {
             this._intersectionEnter = 'onCollisionEnter';
             this._intersectionExit = 'onCollisionExit';
+            this._intersectionStay = 'onCollisionStay';
         }
     }
 
@@ -102,6 +105,10 @@ export class ColliderComponent extends ScratchComponent {
         this.container.emit(collider._intersectionEnter, collider);
     }
 
+    emitCollisionStay(collider: ColliderComponent): void {
+        this.container.emit(collider._intersectionStay, collider);
+    }
+
     emitCollisionExit(collider: ColliderComponent): void {
         this.container.emit(collider._intersectionExit, collider);
     }
@@ -111,8 +118,10 @@ export class ColliderComponent extends ScratchComponent {
 
         this.container.addListener('onCollisionEnter');
         this.container.addListener('onCollisionExit');
+        this.container.addListener('onCollisionStay');
         this.container.addListener('onTriggerEnter');
         this.container.addListener('onTriggerExit');
+        this.container.addListener('onTriggerStay');
     }
 
     override dispose() {
