@@ -1,7 +1,7 @@
 {
-  "name": "type-engine",
+  "name": "@dangermonk/type-engine",
   "version": "1.0.0",
-  "description": "",
+  "description": "typescript based game engine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -12,7 +12,7 @@
     "build": "npm test && tsc",
     "watch": "tsc-watch --onSuccess tsc"
   },
-  "author": "",
+  "author": "DangermonK",
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.3.1",
@@ -25,5 +25,20 @@
     "typescript": "^4.6.3",
     "uuid": "^8.3.2"
   },
-  "dependencies": {}
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DangermonK/type-engine.git"
+  },
+  "keywords": [
+    "games",
+    "game",
+    "engine"
+  ],
+  "bugs": {
+    "url": "https://github.com/DangermonK/type-engine/issues"
+  },
+  "homepage": "https://github.com/DangermonK/type-engine#readme"
 }
