@@ -24,7 +24,6 @@ export abstract class ScratchEntity extends Processor<ScratchComponent> {
         this._options = options;
 
         this.transform = this.requireType(TransformComponent);
-        this.requireType(RenderComponent);
     }
 
     get options(): IScratchEntityOptions {
