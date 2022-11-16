@@ -60,4 +60,8 @@ export class Vector2 implements IVector2 {
         return new Vector2(-this.x, -this.y);
     }
 
+    normal(): Vector2 {
+        return new Vector2(this.y, -this.x);
+    }
+
 }
