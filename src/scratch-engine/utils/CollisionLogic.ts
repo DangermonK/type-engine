@@ -1,4 +1,5 @@
 import { ICollisionInfo, IHitInfo } from "./IHitInfo";
+import { Vector2 } from "./Vector2";
 
 export class CollisionLogic {
 
@@ -48,12 +49,26 @@ export class CollisionLogic {
     static checkBoxCircleCollision(x1: number, y1: number, w: number, h: number, x2: number, y2: number, r: number): ICollisionInfo {
         let xTest = x2;
         let yTest = y2;
+        let xNormal = 0;
+        let yNormal = 0;
 
-        if (x2 < x1) {xTest = x1; }
-        else if (x2 > x1 + w) {xTest = x1 + w; }
+        if (x2 < x1) {
+            xTest = x1;
+            xNormal = -1;
+        }
+        else if (x2 > x1 + w) {
+            xTest = x1 + w;
+            xNormal = 1;
+        }
 
-        if (y2 < y1) {yTest = y1; }
-        else if (y2 > y1 + h) {yTest = y1 + h; }
+        if (y2 < y1) {
+            yTest = y1;
+            yNormal = -1;
+        }
+        else if (y2 > y1 + h) {
+            yTest = y1 + h;
+            yNormal = 1;
+        }
 
         const distance = this.getDistance(x2, y2, xTest, yTest);
 
@@ -62,6 +77,7 @@ export class CollisionLogic {
             hitInfo: {
                 x: xTest,
                 y: yTest,
+                normal: new Vector2(xNormal, yNormal),
             },
         };
     }
@@ -75,6 +91,7 @@ export class CollisionLogic {
             hitInfo: {
                 x: x1 + (uA * (x2 - x1)),
                 y: y1 + (uA * (y2 - y1)),
+                normal: new Vector2(x2-x1, y2-y1).normal().normalized()
             },
         };
     }

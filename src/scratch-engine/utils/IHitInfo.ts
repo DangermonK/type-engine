@@ -1,3 +1,4 @@
+import { Vector2 } from "./Vector2";
 
 export interface ICollisionInfo {
 
@@ -9,6 +10,7 @@ export interface ICollisionInfo {
 export interface IHitInfo {
 
     x: number,
-    y: number
+    y: number,
+    normal: Vector2
 
 }

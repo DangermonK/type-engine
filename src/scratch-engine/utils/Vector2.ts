@@ -16,6 +16,10 @@ export class Vector2 implements IVector2 {
       this.y = y;
     }
 
+    dot(vector: Vector2): number {
+        return this.x * vector.x + this.y * vector.y;
+    }
+
     add(vec: Vector2): void {
         this.x += vec.x;
         this.y += vec.y;
