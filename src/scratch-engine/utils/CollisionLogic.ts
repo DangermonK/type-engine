@@ -85,7 +85,14 @@ export class CollisionLogic {
         const right = this.checkLineLineCollision(x1 + w, y1, x1 + w, y1 + h, x2, y2, x3, y3);
         const bottom = this.checkLineLineCollision(x1, y1 + h, x1 + w, y1 + h, x2, y2, x3, y3);
 
-        return top.isCollision ? top : right.isCollision ? right : bottom.isCollision ? bottom : left.isCollision ? left : { isCollision: false };
+        const inside = this.checkBoxBoxCollision(x1, y1, w, h, x2, y2, x3-x2, y3-y2);
+
+        return top.isCollision ? top :
+            right.isCollision ? right :
+            bottom.isCollision ? bottom :
+            left.isCollision ? left :
+            inside.isCollision ? inside :
+                { isCollision: false };
     }
 
 }
