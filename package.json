@@ -10,7 +10,10 @@
   "scripts": {
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts'",
     "build": "npm test && tsc",
-    "watch": "tsc-watch --onSuccess tsc"
+    "watch": "tsc-watch --onSuccess tsc",
+    "major": "npm run build && npm version major",
+    "minor": "npm run build && npm version minor",
+    "patch": "npm run build && npm version patch"
   },
   "author": "DangermonK",
   "license": "ISC",
