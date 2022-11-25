@@ -23,7 +23,7 @@ export * from './scratch-engine/interfaces/IBounds'
 export * from './scratch-engine/interfaces/IVector2'
 export * from './scratch-engine/interfaces/ICollision'
 export * from './scratch-engine/interfaces/IScratchEntityOptions'
-export * from './scratch-engine/interfaces/IScratchSceneSettings'
+export * from './scratch-engine/interfaces/ICollisionHandlerSettings'
 
 export * from './scratch-engine/scene-scripts/EntityFactory'
 export * from './scratch-engine/scene-scripts/EntityHandler'

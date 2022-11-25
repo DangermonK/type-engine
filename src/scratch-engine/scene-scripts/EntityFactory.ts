@@ -3,8 +3,7 @@ import {ScratchScene} from "../core/ScratchScene.abstract";
 import {v4 as uuidv4} from "uuid";
 import {EntityHandler} from "./EntityHandler";
 import {ScratchEntity} from "../core/ScratchEntity.abstract";
-import {IScratchEntityOptions} from "../interfaces/IScratchEntityOptions";
-import {Layer} from "../enums/Layer.enum";
+import { defaultScratchEntityOptions, IScratchEntityOptions } from "../interfaces/IScratchEntityOptions";
 
 
 export class EntityFactory extends ScratchSceneScript {
@@ -17,7 +16,7 @@ export class EntityFactory extends ScratchSceneScript {
     }
 
     instantiate<Type extends ScratchEntity>(entity: new(...args: Array<any>) => Type, id: string = uuidv4(),
-                                            options: IScratchEntityOptions = { layer: Layer.DEFAULT }): Type {
+                                            options: IScratchEntityOptions = defaultScratchEntityOptions): Type {
         return this._entityHandler.addEntity(new entity(id, this.container, options));
     }
 

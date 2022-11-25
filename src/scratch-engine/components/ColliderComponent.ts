@@ -17,6 +17,7 @@ export class ColliderComponent extends ScratchComponent {
 	private _offset: Vector2;
 
     private readonly _hashCoords: Array<string>;
+    private readonly _collisionHandler: CollisionHandler;
 
     private _isTrigger!: boolean;
     private _intersectionEnter!: string;
@@ -28,6 +29,8 @@ export class ColliderComponent extends ScratchComponent {
         this._offset = new Vector2();
 
         this._hashCoords = new Array<string>();
+
+        this._collisionHandler = this.container.scene.requireType(CollisionHandler);
 
         this.setTrigger(false);
 
@@ -116,7 +119,7 @@ export class ColliderComponent extends ScratchComponent {
     }
 
     override initialize() {
-        this.container.scene.getElement(CollisionHandler).pushCollider(this);
+        this._collisionHandler.pushCollider(this);
 
         this.container.addListener('onCollisionEnter');
         this.container.addListener('onCollisionExit');
@@ -127,7 +130,7 @@ export class ColliderComponent extends ScratchComponent {
     }
 
     override dispose() {
-        this.container.scene.getElement(CollisionHandler).removeCollider(this);
+        this._collisionHandler.removeCollider(this);
     }
 
     private render(ctx: CanvasRenderingContext2D): void {

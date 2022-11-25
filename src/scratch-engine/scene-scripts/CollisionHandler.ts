@@ -5,10 +5,13 @@ import { HashedGrid } from "../utils/HashedGrid";
 import { ColliderComponent } from "../components/ColliderComponent";
 import { IBounds } from "../interfaces/IBounds";
 import { Layer } from "../enums/Layer.enum";
-import { IActiveCollision, ICollision } from "../interfaces/ICollision";
+import { IActiveCollision } from "../interfaces/ICollision";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
+import { defaultCollisionHandlerSettings, ICollisionHandlerSettings } from "../interfaces/ICollisionHandlerSettings";
 
 export class CollisionHandler extends ScratchSceneScript {
+
+    private readonly _settings: ICollisionHandlerSettings;
 
     private readonly _entityHandler: EntityHandler;
 
@@ -20,9 +23,11 @@ export class CollisionHandler extends ScratchSceneScript {
     private readonly _exitedCollisions: Set<string>;
     private readonly _stayedCollisions: Set<string>;
 
-    constructor(scene: ScratchScene) {
+    constructor(scene: ScratchScene, settings: ICollisionHandlerSettings = defaultCollisionHandlerSettings) {
         super(scene);
         this._entityHandler = this.container.requireType(EntityHandler);
+
+        this._settings = settings;
 
         this._layerMap = new Map<Layer, Set<string>>();
         this._layeredGridMap = new Map<Layer, HashedGrid>();
@@ -39,7 +44,7 @@ export class CollisionHandler extends ScratchSceneScript {
         this._layerMap.get(collider.container.options.layer)!.add(collider.container.id);
 
         if(!this._layeredGridMap.has(collider.container.options.layer))
-            this._layeredGridMap.set(collider.container.options.layer, new HashedGrid(this.container.settings.hashGridCellSize));
+            this._layeredGridMap.set(collider.container.options.layer, new HashedGrid(this._settings.hashGridCellSize));
 
         this._layeredGridMap.get(collider.container.options.layer)!.pushElement(collider);
     }
@@ -64,7 +69,7 @@ export class CollisionHandler extends ScratchSceneScript {
     }
 
     resolveAllCollisions(): void {
-        for(const layer of this.container.settings.collisionRules.keys()) {
+        for(const layer of this._settings.collisionRules.keys()) {
             this.resolveCollisionsOnLayer(layer);
         }
 
@@ -76,7 +81,7 @@ export class CollisionHandler extends ScratchSceneScript {
     // TODO: optimize collision checks for none moving objects
     private resolveCollisionsOnLayer(layer: Layer = Layer.DEFAULT): void {
         const entities = this._entityHandler.getEntities(this._layerMap.get(layer)!);
-        const compareLayers = this.container.settings.collisionRules.get(layer) || [];
+        const compareLayers = this._settings.collisionRules.get(layer) || [];
 
         for(const entity of entities) {
             const collider = entity.getElement(ColliderComponent);

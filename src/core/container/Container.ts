@@ -18,11 +18,11 @@ export class Container<Type extends Scriptable<any>> implements IContainer<Type>
         return this._scriptMap.all;
     }
 
-    requireType<Element extends Type>(element: { new(...args: any): Element }): Element {
+    requireType<Element extends Type>(element: { new(...args: any): Element }, ...args: any): Element {
         if(this.hasType(element)) {
             return this.getElement(element);
         }
-        return this.addElement(new element(this));
+        return this.addElement(new element(this, ...args));
     }
 
     addElement<Element extends Type>(element: Element): Element {
