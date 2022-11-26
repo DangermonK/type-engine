@@ -1,5 +1,5 @@
 import { Container } from "./Container";
-import { IDisposable } from "./../interfaces/IDisposable";
+import { IDisposable } from "../interfaces/IDisposable";
 
 export abstract class Scriptable<Type extends Container<any>> implements IDisposable {
 

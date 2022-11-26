@@ -3,8 +3,6 @@ import { Processor } from "../../core/container/Processor";
 import { ScratchComponent } from "./ScratchComponent.abstract";
 import { TransformComponent } from "../components/TransformComponent";
 import {IScratchEntityOptions} from "../interfaces/IScratchEntityOptions";
-import {RenderComponent} from "../components/RenderComponent";
-
 
 export abstract class ScratchEntity extends Processor<ScratchComponent> {
 

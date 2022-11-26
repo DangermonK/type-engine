@@ -1,4 +1,4 @@
-import { ICollisionInfo, IHitInfo } from "./IHitInfo";
+import { ICollisionInfo } from "./IHitInfo";
 import { Vector2 } from "./Vector2";
 
 export class CollisionLogic {

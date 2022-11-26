@@ -1,7 +1,6 @@
 import {ScratchSceneScript} from "../core/ScratchSceneScript.abstract";
 import {ScratchScene} from "../core/ScratchScene.abstract";
 import {EntityHandler} from "./EntityHandler";
-import {RenderComponent} from "../components/RenderComponent";
 import {ScratchEntity} from "../core/ScratchEntity.abstract";
 
 

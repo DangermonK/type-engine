@@ -1,6 +1,6 @@
 import { Scriptable } from "./Scriptable.abstract";
 import { IContainer } from "../interfaces/IContainer";
-import { IDisposable } from "./../interfaces/IDisposable";
+import { IDisposable } from "../interfaces/IDisposable";
 import { ObjectMap } from "../../scratch-engine/utils/ObjectMap";
 
 export class Container<Type extends Scriptable<any>> implements IContainer<Type>, IDisposable {
