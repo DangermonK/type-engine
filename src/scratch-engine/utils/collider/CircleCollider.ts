@@ -50,12 +50,4 @@ export class CircleCollider extends Collider {
 
 	}
 
-	render(ctx: CanvasRenderingContext2D, position: IVector2): void {
-		ctx.strokeStyle = '#f00';
-		ctx.beginPath();
-		ctx.arc(position.x, position.y, this.radius, 0, 2 * Math.PI);
-		ctx.stroke();
-		ctx.closePath();
-	}
-
 }

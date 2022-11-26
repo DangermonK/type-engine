@@ -32,6 +32,4 @@ export abstract class Collider {
 
 	abstract checkCollision(position: IVector2, collider: Collider, colliderPosition: IVector2): ICollisionInfo;
 
-	abstract render(ctx: CanvasRenderingContext2D, position: IVector2): void;
-
 }

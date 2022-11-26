@@ -25,17 +25,4 @@ export class RenderComponent extends ScratchComponent {
         this._renderer.addRenderEntity(this.container);
     }
 
-    private render(ctx: CanvasRenderingContext2D): void {
-        ctx.strokeStyle = '#00f';
-        ctx.fillStyle = '#000';
-        //ctx.fillText(this.container.constructor.name, this.container.transform.position.x, this.container.transform.position.y);
-        ctx.beginPath();
-        ctx.moveTo(this.container.transform.position.x - 5, this.container.transform.position.y);
-        ctx.lineTo(this.container.transform.position.x + 5, this.container.transform.position.y);
-        ctx.moveTo(this.container.transform.position.x, this.container.transform.position.y - 5);
-        ctx.lineTo(this.container.transform.position.x, this.container.transform.position.y + 5);
-        ctx.stroke();
-        ctx.closePath();
-    }
-
 }

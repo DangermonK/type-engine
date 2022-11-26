@@ -42,12 +42,4 @@ export class BoxCollider extends Collider {
 		}
 	}
 
-	render(ctx: CanvasRenderingContext2D, position: IVector2): void {
-		ctx.strokeStyle = '#f00';
-		ctx.beginPath();
-		ctx.rect(position.x, position.y, this.bounds.w, this.bounds.h);
-		ctx.stroke();
-		ctx.closePath();
-	}
-
 }

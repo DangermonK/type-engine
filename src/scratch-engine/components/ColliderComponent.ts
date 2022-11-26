@@ -133,13 +133,4 @@ export class ColliderComponent extends ScratchComponent {
         this._collisionHandler.removeCollider(this);
     }
 
-    private render(ctx: CanvasRenderingContext2D): void {
-        ctx.strokeStyle = '#0f0';
-        ctx.beginPath();
-        ctx.rect(this.bounds.x, this.bounds.y, this.bounds.w, this.bounds.h);
-        ctx.stroke();
-        ctx.closePath();
-        this.collider.render(ctx, this.position);
-    }
-
 }

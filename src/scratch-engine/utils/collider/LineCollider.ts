@@ -52,13 +52,4 @@ export class LineCollider extends Collider {
 		}
 	}
 
-	render(ctx: CanvasRenderingContext2D, position: IVector2): void {
-		ctx.strokeStyle = '#f00';
-		ctx.beginPath();
-		ctx.moveTo(position.x, position.y);
-		ctx.lineTo(position.x + this.vector.x, position.y + this.vector.y);
-		ctx.stroke();
-		ctx.closePath();
-	}
-
 }

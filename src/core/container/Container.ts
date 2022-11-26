@@ -14,7 +14,7 @@ export class Container<Type extends Scriptable<any>> implements IContainer<Type>
         this._listenerMap = new Map<string, Array<(data?: any) => void>>();
     }
 
-    protected get scripts(): Array<Type> {
+    get scripts(): Array<Type> {
         return this._scriptMap.all;
     }
 
