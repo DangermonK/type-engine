@@ -1,58 +1,44 @@
 import { ScratchSceneScript } from "../core/ScratchSceneScript.abstract";
 import { ScratchScene } from "../core/ScratchScene.abstract";
-import { ISerializedData } from "../interfaces/ISerializedData";
-import { DeserializableComponent } from "../components/DeserializableComponent";
+import { eventType, ISerializedData } from "../interfaces/ISerializedData";
 import { SerializableComponent } from "../components/SerializableComponent";
 
 
 export class DataSerializer extends ScratchSceneScript {
 
-	private readonly _serializables: Map<string, SerializableComponent>;
-	private readonly _deserializables: Map<string, DeserializableComponent>;
-
-	private readonly _serializedData: ISerializedData;
+	private readonly _serializables: Set<SerializableComponent>;
+	private readonly _events: Set<eventType>;
 
 	constructor(scene: ScratchScene) {
 		super(scene);
 
-		this._serializedData = {  entities: [], removals: [], instantiations: [] };
-
-		this._serializables = new Map<string, SerializableComponent>();
-		this._deserializables = new Map<string, DeserializableComponent>();
-	}
-
-	addDeserializable(deserializable: DeserializableComponent): void {
-		this._deserializables.set(deserializable.container.id, deserializable);
-	}
-
-	removeDeserializable(deserializable: DeserializableComponent): void {
-		this._deserializables.delete(deserializable.container.id);
+		this._serializables = new Set<SerializableComponent>();
+		this._events = new Set<eventType>();
 	}
 
 	addSerializable(serializable: SerializableComponent): void {
-		// add event for instantiation
-		this._serializables.set(serializable.container.id, serializable);
+		this._serializables.add(serializable);
 	}
 
 	removeSerializable(serializable: SerializableComponent): void {
-		// add event for removal
-		this._serializables.delete(serializable.container.id);
+		this._serializables.delete(serializable);
 	}
 
-	serialize(): any {
-		return {}
+	pushEvent(event: eventType): void {
+		this._events.add(event);
 	}
 
-	deserialize(data: ISerializedData): void {
-		for(const entity of data.instantiations) {
+	private serialize(): ISerializedData {
+		return {
+			data: [...this._serializables],
+			events: [...this._events]
+		};
+	}
 
-		}
-		for(const deserializable of data.entities) {
-			this._deserializables.get(deserializable.id)!.receiveData(deserializable);
-		}
-		for(const entity of data.removals) {
-
-		}
+	get serializedData(): ISerializedData {
+		const data: ISerializedData = this.serialize();
+		this._events.clear();
+		return data;
 	}
 
 	dispose(): void {

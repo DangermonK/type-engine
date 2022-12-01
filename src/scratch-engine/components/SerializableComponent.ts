@@ -1,25 +1,42 @@
 import { ScratchComponent } from "../core/ScratchComponent.abstract";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
 import { DataSerializer } from "../scene-scripts/DataSerializer";
+import { SERIALIZED_EVENT } from "../interfaces/ISerializedData";
 
 
-export abstract class SerializableComponent extends ScratchComponent {
+export class SerializableComponent extends ScratchComponent {
 
-	private readonly _dataSerializer: DataSerializer;
+	protected readonly _dataSerializer: DataSerializer;
 
-	protected constructor(entity: ScratchEntity) {
+	constructor(entity: ScratchEntity) {
 		super(entity);
 
-		this._dataSerializer = this.container.scene.requireType(DataSerializer);
+		this._dataSerializer = this.container.scene.getElement(DataSerializer);
 	}
 
-	abstract publishData(): any;
+	toJSON(): any {
+		return {
+			id: this.container.id,
+			x: this.container.transform.position.x,
+			y: this.container.transform.position.y,
+		}
+	}
 
 	dispose(): void {
 		this._dataSerializer.removeSerializable(this);
+		this._dataSerializer.pushEvent({
+			type: SERIALIZED_EVENT.REMOVE,
+			id: this.container.id
+		});
 	}
 
 	initialize(): void {
 		this._dataSerializer.addSerializable(this);
+		this._dataSerializer.pushEvent({
+			type: SERIALIZED_EVENT.INSTANTIATE,
+			id: this.container.id,
+			name: this.container.constructor.name,
+			data: this.toJSON()
+		});
 	}
 }
