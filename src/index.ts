@@ -17,6 +17,7 @@ export * from './scratch-engine/components/ColliderComponent'
 export * from './scratch-engine/components/RenderComponent'
 export * from './scratch-engine/components/DebugRenderComponent'
 export * from './scratch-engine/components/TransformComponent'
+export * from './scratch-engine/components/SerializableComponent'
 
 export * from './scratch-engine/enums/Layer.enum'
 
@@ -24,12 +25,14 @@ export * from './scratch-engine/interfaces/IBounds'
 export * from './scratch-engine/interfaces/IVector2'
 export * from './scratch-engine/interfaces/ICollision'
 export * from './scratch-engine/interfaces/IScratchEntityOptions'
+export * from './scratch-engine/interfaces/ISerializedData'
 export * from './scratch-engine/interfaces/ICollisionHandlerSettings'
 
 export * from './scratch-engine/scene-scripts/EntityFactory'
 export * from './scratch-engine/scene-scripts/EntityHandler'
 export * from './scratch-engine/scene-scripts/GraphicsHandler'
 export * from './scratch-engine/scene-scripts/CollisionHandler'
+export * from './scratch-engine/scene-scripts/DataSerializer'
 
 export * from './scratch-engine/utils/HashedGrid'
 export * from './scratch-engine/utils/ObjectMap'
