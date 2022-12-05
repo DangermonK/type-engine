@@ -1,10 +1,17 @@
 import { SerializableComponent } from "../components/SerializableComponent";
+import { ScratchEntity } from "../core/ScratchEntity.abstract";
 
 export enum SERIALIZED_EVENT {
 
 	INSTANTIATE,
 	REMOVE,
 	CHANGE
+
+}
+
+export interface IScratchEntity {
+
+	id: string
 
 }
 
@@ -19,7 +26,7 @@ export interface IInstantiateEvent extends ISerializedEvent {
 	type: SERIALIZED_EVENT.INSTANTIATE,
 	id: string,
 	name: string,
-	data: SerializableComponent
+	data: IScratchEntity
 
 }
 
@@ -34,7 +41,7 @@ export interface IChangeEvent extends ISerializedEvent {
 
 	type: SERIALIZED_EVENT.CHANGE,
 	id: string,
-	data: SerializableComponent
+	data: IScratchEntity
 
 }
 

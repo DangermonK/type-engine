@@ -36,7 +36,7 @@ export class SerializableComponent extends ScratchComponent {
 			type: SERIALIZED_EVENT.INSTANTIATE,
 			id: this.container.id,
 			name: this.container.constructor.name,
-			data: this.toJSON()
+			data: this.container.toJSON()
 		});
 	}
 }

@@ -3,6 +3,7 @@ import { Processor } from "../../core/container/Processor";
 import { ScratchComponent } from "./ScratchComponent.abstract";
 import { TransformComponent } from "../components/TransformComponent";
 import {IScratchEntityOptions} from "../interfaces/IScratchEntityOptions";
+import { IScratchEntity } from "../interfaces/ISerializedData";
 
 export abstract class ScratchEntity extends Processor<ScratchComponent> {
 
@@ -36,14 +37,9 @@ export abstract class ScratchEntity extends Processor<ScratchComponent> {
         return this._scene;
     }
 
-    toJSON() {
+    toJSON(): IScratchEntity {
         return {
-            id: this._id,
-            t: {
-                x: this.transform.position.x,
-                y: this.transform.position.y,
-                r: this.transform.rotation
-            }
+            id: this._id
         }
     }
 
