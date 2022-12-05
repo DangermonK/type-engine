@@ -32,6 +32,13 @@ export class CollisionHandler extends ScratchSceneScript {
         this._layerMap = new Map<Layer, Set<string>>();
         this._layeredGridMap = new Map<Layer, HashedGrid>();
 
+        settings.collisionRules.forEach((targets, source) => {
+            [...targets, source].forEach(layer => {
+                 this._layerMap.set(layer, new Set<string>());
+                 this._layeredGridMap.set(layer, new HashedGrid(settings.hashGridCellSize));
+            });
+        })
+
         this._activeCollisions = new Map<string, IActiveCollision>();
         this._enteredCollisions = new Set<string>();
         this._exitedCollisions = new Set<string>();
