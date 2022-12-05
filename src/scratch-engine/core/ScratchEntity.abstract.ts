@@ -36,4 +36,15 @@ export abstract class ScratchEntity extends Processor<ScratchComponent> {
         return this._scene;
     }
 
+    toJSON() {
+        return {
+            id: this._id,
+            t: {
+                x: this.transform.position.x,
+                y: this.transform.position.y,
+                r: this.transform.rotation
+            }
+        }
+    }
+
 }
