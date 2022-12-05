@@ -1,6 +1,6 @@
 {
   "name": "@dangermonk/type-engine",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "typescript based game engine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
