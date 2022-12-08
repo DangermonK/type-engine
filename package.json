@@ -11,10 +11,10 @@
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts'",
     "build": "npm test && tsc",
     "watch": "tsc-watch --onSuccess tsc",
-    "minor": "git checkout develop && npm run build && npm version minor && npm publish --scope public && npm run prepare_release",
-    "major": "git checkout develop && npm run build && npm version major && npm publish --scope public && npm run prepare_release",
-    "patch": "git checkout develop && npm run build && npm version patch && npm publish --scope public && npm run prepare_release",
-    "prepare_release": "git push && git push --tags && git checkout master && git pull && git merge develop && git push"
+    "minor": "git checkout develop && npm run build && npm version minor && npm publish --scope public && npm run push_release",
+    "major": "git checkout develop && npm run build && npm version major && npm publish --scope public && npm run push_release",
+    "patch": "git checkout develop && npm run build && npm version patch && npm publish --scope public && npm run push_release",
+    "push_release": "git push && git push --tags && git checkout master && git pull && git merge develop && git push"
   },
   "author": "DangermonK",
   "license": "ISC",
