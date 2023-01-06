@@ -29,6 +29,7 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
+    "@dangermonk/dda-ray": "^2.0.0",
     "uuid": "^8.3.2"
   },
   "directories": {

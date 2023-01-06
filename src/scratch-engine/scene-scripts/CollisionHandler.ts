@@ -5,9 +5,14 @@ import { HashedGrid } from "../utils/HashedGrid";
 import { ColliderComponent } from "../components/ColliderComponent";
 import { IBounds } from "../interfaces/IBounds";
 import { Layer } from "../enums/Layer.enum";
-import { IActiveCollision } from "../interfaces/ICollision";
+import { IActiveCollision, ICollision } from "../interfaces/ICollision";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
 import { defaultCollisionHandlerSettings, ICollisionHandlerSettings } from "../interfaces/ICollisionHandlerSettings";
+import { IVector2 } from "../interfaces/IVector2";
+import { DDARay } from "@dangermonk/dda-ray";
+import { Vector2 } from "../utils/Vector2";
+import { LineCollider } from "../utils/collider/LineCollider";
+import { ICollisionInfo } from "../utils/IHitInfo";
 
 export class CollisionHandler extends ScratchSceneScript {
 
@@ -82,6 +87,70 @@ export class CollisionHandler extends ScratchSceneScript {
 
         this.resolveUncheckedCollisions();
         this.emitCurrentCollisions();
+    }
+
+    raycastHit(origin: Vector2, ray: Vector2, layer: Set<Layer>, maxSteps: number = 100): ICollision | null {
+
+        let lastPosition: IVector2 = new Vector2(origin.x / this._settings.hashGridCellSize, origin.y / this._settings.hashGridCellSize);
+
+        const raycast = new DDARay(lastPosition, ray);
+
+        let nextPosition = raycast.next();
+
+        const collisions: Array<ICollision> = new Array<ICollision>();
+        const collider = new LineCollider((nextPosition.pos.x - lastPosition.x)*50, (nextPosition.pos.y - lastPosition.y)*50);
+
+        for(let i = 0; i < maxSteps; i++) {
+            collisions.length = 0;
+            const elements = [];
+            for(let l of layer) {
+                elements.push(...this._layeredGridMap.get(l)!.getElementsFromCoordinates(nextPosition.cell.x, nextPosition.cell.y));
+            }
+
+            const entities = this._entityHandler.getEntities(new Set<string>(elements));
+
+            for(let e of entities) {
+                const entityCollider = e.getElement(ColliderComponent);
+                const collisionInfo: ICollisionInfo = entityCollider.collider.checkCollision(e.transform.position, collider, new Vector2(lastPosition.x * 50, lastPosition.y * 50));
+
+                if(collisionInfo.isCollision)
+                    collisions.push({
+                        collider: entityCollider,
+                        hitInfo: collisionInfo.hitInfo
+                    });
+            }
+
+            if(collisions.length > 0) {
+                break;
+            }
+
+            lastPosition = nextPosition.pos;
+            nextPosition = raycast.next();
+            collider.setVector((nextPosition.pos.x - lastPosition.x)*50, (nextPosition.pos.y - lastPosition.y)*50)
+        }
+
+        if(collisions.length < 1) {
+            return null;
+        }
+
+        let dist = Infinity;
+        let shortest = 0;
+        let counter = 0;
+        for(const collision of collisions) {
+            const diff = {
+                x: lastPosition.x*50 - collision.hitInfo!.x,
+                y: lastPosition.y*50 - collision.hitInfo!.y,
+            };
+            const absDist = Math.sqrt(diff.x*diff.x + diff.y*diff.y);
+            if(absDist < dist) {
+                shortest = counter;
+                dist = absDist;
+            }
+            counter++;
+        }
+
+        return collisions[shortest];
+
     }
 
     // TODO: optimize same layer collisions
