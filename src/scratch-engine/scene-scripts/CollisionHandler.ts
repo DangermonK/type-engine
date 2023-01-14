@@ -9,7 +9,7 @@ import { IActiveCollision, ICollision } from "../interfaces/ICollision";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
 import { defaultCollisionHandlerSettings, ICollisionHandlerSettings } from "../interfaces/ICollisionHandlerSettings";
 import { IVector2 } from "../interfaces/IVector2";
-import { DDARay } from "@dangermonk/dda-ray";
+import { DDALine, DDARay } from "@dangermonk/dda-ray";
 import { Vector2 } from "../utils/Vector2";
 import { LineCollider } from "../utils/collider/LineCollider";
 import { ICollisionInfo } from "../utils/IHitInfo";
@@ -89,18 +89,29 @@ export class CollisionHandler extends ScratchSceneScript {
         this.emitCurrentCollisions();
     }
 
-    raycastHit(origin: Vector2, ray: Vector2, layer: Set<Layer>, maxSteps: number = 100): ICollision | null {
+    raycastHit(origin: Vector2, target: Vector2, layer: Set<Layer>): ICollision | null {
 
         let lastPosition: IVector2 = new Vector2(origin.x / this._settings.hashGridCellSize, origin.y / this._settings.hashGridCellSize);
 
-        const raycast = new DDARay(lastPosition, ray);
+        const raycast = new DDALine(lastPosition, {
+            x: target.x / this._settings.hashGridCellSize,
+            y: target.y / this._settings.hashGridCellSize
+        });
 
-        let nextPosition = raycast.next();
+        let nextPosition = {
+            pos: lastPosition,
+            cell: new Vector2() as IVector2,
+            stop: false
+        };
 
         const collisions: Array<ICollision> = new Array<ICollision>();
-        const collider = new LineCollider((nextPosition.pos.x - lastPosition.x)*50, (nextPosition.pos.y - lastPosition.y)*50);
+        const collider = new LineCollider();
 
-        for(let i = 0; i < maxSteps; i++) {
+        do {
+            lastPosition = nextPosition.pos;
+            nextPosition = raycast.next();
+            collider.setVector((nextPosition.pos.x - lastPosition.x)*50, (nextPosition.pos.y - lastPosition.y)*50)
+
             collisions.length = 0;
             const elements = [];
             for(let l of layer) {
@@ -124,10 +135,7 @@ export class CollisionHandler extends ScratchSceneScript {
                 break;
             }
 
-            lastPosition = nextPosition.pos;
-            nextPosition = raycast.next();
-            collider.setVector((nextPosition.pos.x - lastPosition.x)*50, (nextPosition.pos.y - lastPosition.y)*50)
-        }
+        } while (!nextPosition.stop)
 
         if(collisions.length < 1) {
             return null;
