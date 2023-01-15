@@ -90,7 +90,7 @@ export class CollisionHandler extends ScratchSceneScript {
     }
 
     raycastHit(origin: Vector2, target: Vector2, layer: Set<Layer>): ICollision | null {
-
+        // todo: refactor / optimize and add mutliple methods for ray/linecasting
         let lastPosition: IVector2 = new Vector2(origin.x / this._settings.hashGridCellSize, origin.y / this._settings.hashGridCellSize);
 
         const raycast = new DDALine(lastPosition, {
