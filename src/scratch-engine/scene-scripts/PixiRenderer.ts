@@ -21,8 +21,8 @@ export class PixiRenderer extends ScratchSceneScript {
 	}
 
 	setPosition(x: number, y: number): void {
-		this.pixiContainer.stage.x = x - this.pixiContainer.view.width * 0.5;
-		this.pixiContainer.stage.y = y - this.pixiContainer.view.height * 0.5;
+		this.pixiContainer.stage.x = -x + this.pixiContainer.view.width * 0.5;
+		this.pixiContainer.stage.y = -y + this.pixiContainer.view.height * 0.5;
 	}
 
 	dispose(): void {
