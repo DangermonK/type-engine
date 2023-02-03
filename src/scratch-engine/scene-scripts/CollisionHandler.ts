@@ -108,7 +108,6 @@ export class CollisionHandler extends ScratchSceneScript {
         const collider = new LineCollider();
 
         do {
-            lastPosition = nextPosition.pos;
             nextPosition = raycast.next();
             collider.setVector((nextPosition.pos.x - lastPosition.x)*50, (nextPosition.pos.y - lastPosition.y)*50)
 
