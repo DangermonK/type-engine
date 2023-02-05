@@ -1,5 +1,5 @@
 import { ScratchSceneScript } from "../core/ScratchSceneScript.abstract";
-import { Application, DisplayObject, IApplicationOptions } from "pixi.js";
+import { Application, DisplayObject, IApplicationOptions, ObservablePoint } from "pixi.js";
 import { ScratchScene } from "../core/ScratchScene.abstract";
 
 export class PixiRenderer extends ScratchSceneScript {
@@ -23,6 +23,10 @@ export class PixiRenderer extends ScratchSceneScript {
 	setPosition(x: number, y: number): void {
 		this.pixiContainer.stage.x = -x + this.pixiContainer.view.width * 0.5;
 		this.pixiContainer.stage.y = -y + this.pixiContainer.view.height * 0.5;
+	}
+
+	get position(): ObservablePoint {
+		return this.pixiContainer.stage.position;
 	}
 
 	dispose(): void {
