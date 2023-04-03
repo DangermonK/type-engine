@@ -99,8 +99,10 @@ export class CollisionLogic {
     static checkBoxLineCollision(x1: number, y1: number, w: number, h: number, x2: number, y2: number, x3: number, y3: number): ICollisionInfo {
         const top = this.checkLineLineCollision(x1, y1, x1 + w, y1, x2, y2, x3, y3);
         const left = this.checkLineLineCollision(x1, y1, x1, y1 + h, x2, y2, x3, y3);
+        left.hitInfo!.normal.x = -left.hitInfo!.normal.x;
         const right = this.checkLineLineCollision(x1 + w, y1, x1 + w, y1 + h, x2, y2, x3, y3);
         const bottom = this.checkLineLineCollision(x1, y1 + h, x1 + w, y1 + h, x2, y2, x3, y3);
+        bottom.hitInfo!.normal.y = -bottom.hitInfo!.normal.y;
 
         const collisions = [];
         if(top.isCollision) collisions.push(top);
