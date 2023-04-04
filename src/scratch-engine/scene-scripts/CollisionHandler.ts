@@ -145,8 +145,8 @@ export class CollisionHandler extends ScratchSceneScript {
         let counter = 0;
         for(const collision of collisions) {
             const diff = {
-                x: lastPosition.x*50 - collision.hitInfo!.x,
-                y: lastPosition.y*50 - collision.hitInfo!.y,
+                x: lastPosition.x*this._settings.hashGridCellSize - collision.hitInfo!.x,
+                y: lastPosition.y*this._settings.hashGridCellSize - collision.hitInfo!.y,
             };
             const absDist = Math.sqrt(diff.x*diff.x + diff.y*diff.y);
             if(absDist < dist) {
