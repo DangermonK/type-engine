@@ -109,7 +109,7 @@ export class CollisionHandler extends ScratchSceneScript {
 
         do {
             nextPosition = raycast.next();
-            collider.setVector((nextPosition.pos.x - lastPosition.x)*50, (nextPosition.pos.y - lastPosition.y)*50)
+            collider.setVector((nextPosition.pos.x - lastPosition.x)*this._settings.hashGridCellSize, (nextPosition.pos.y - lastPosition.y)*this._settings.hashGridCellSize)
 
             collisions.length = 0;
             const elements = [];
@@ -121,7 +121,7 @@ export class CollisionHandler extends ScratchSceneScript {
 
             for(let e of entities) {
                 const entityCollider = e.getElement(ColliderComponent);
-                const collisionInfo: ICollisionInfo = entityCollider.collider.checkCollision(e.transform.position, collider, new Vector2(lastPosition.x * 50, lastPosition.y * 50));
+                const collisionInfo: ICollisionInfo = entityCollider.collider.checkCollision(e.transform.position, collider, new Vector2(lastPosition.x * this._settings.hashGridCellSize, lastPosition.y * this._settings.hashGridCellSize));
 
                 if(collisionInfo.isCollision)
                     collisions.push({
