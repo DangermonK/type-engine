@@ -19,7 +19,7 @@ export class PixiComponent extends ScratchComponent {
 	setDisplayObject(pixiObject: DisplayObject): void {
 		this.pixiRenderer.removeRenderElement(this.pixiObject);
 		this.pixiObject = pixiObject;
-		this.pixiRenderer.addRenderElement(this.pixiObject);
+		this.initialize();
 	}
 
 	dispose(): void {
