@@ -5,7 +5,7 @@ import { ScratchEntity } from "../core/ScratchEntity.abstract";
 
 export class PixiComponent extends ScratchComponent {
 
-	protected readonly pixiObject: DisplayObject;
+	protected pixiObject: DisplayObject;
 
 	private readonly pixiRenderer: PixiRenderer;
 
@@ -14,6 +14,12 @@ export class PixiComponent extends ScratchComponent {
 
 		this.pixiObject = pixiObject;
 		this.pixiRenderer = this.container.scene.requireType(PixiRenderer);
+	}
+
+	setDisplayObject(pixiObject: DisplayObject): void {
+		this.pixiRenderer.removeRenderElement(this.pixiObject);
+		this.pixiObject = pixiObject;
+		this.pixiRenderer.addRenderElement(this.pixiObject);
 	}
 
 	dispose(): void {
