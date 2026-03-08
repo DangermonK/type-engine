@@ -32,12 +32,18 @@ export class Vector2 implements IVector2 {
 
     normalize(): void {
         const magnitude = this.magnitude();
+        if(magnitude == 0)
+            this.set(0, 0);
+
         this.x /= magnitude;
         this.y /= magnitude;
     }
 
     normalized(): Vector2 {
         const magnitude = this.magnitude();
+        if(magnitude == 0)
+            return new Vector2();
+
         return new Vector2(
             this.x / magnitude,
             this.y / magnitude

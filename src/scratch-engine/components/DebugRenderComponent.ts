@@ -10,12 +10,10 @@ import { RenderComponent } from "./RenderComponent";
 export class DebugRenderComponent extends ScratchComponent {
 
   private readonly _debugScripts: Array<(ctx: CanvasRenderingContext2D) => void>;
-  private readonly _debugSettings: Set<string>;
 
-  constructor(entity: ScratchEntity, settings: Array<typeof ScratchComponent> = [TransformComponent]) {
+  constructor(entity: ScratchEntity) {
     super(entity);
 
-    this._debugSettings = new Set<string>(settings.map(element => element.name));
     this._debugScripts = new Array<() => void>();
 
     this.container.requireType(RenderComponent);
@@ -27,8 +25,6 @@ export class DebugRenderComponent extends ScratchComponent {
 
   initialize(): void {
     for (const script of this.container.scripts) {
-        if(!this._debugSettings.has(script.constructor.name))
-          continue;
 
         switch (script.constructor.name) {
           case ColliderComponent.name:

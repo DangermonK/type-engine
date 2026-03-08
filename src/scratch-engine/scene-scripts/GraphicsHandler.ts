@@ -6,7 +6,7 @@ import {ScratchEntity} from "../core/ScratchEntity.abstract";
 
 export class GraphicsHandler extends ScratchSceneScript {
 
-    private _ctx?: CanvasRenderingContext2D;
+    private readonly _ctx: CanvasRenderingContext2D;
 
     private readonly _renderedEntities: Set<string>;
     private readonly _entityHandler: EntityHandler;
@@ -16,6 +16,19 @@ export class GraphicsHandler extends ScratchSceneScript {
 
         this._entityHandler = this.container.requireType(EntityHandler);
         this._renderedEntities = new Set<string>();
+
+        const canvas = document.createElement("canvas");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener("resize", (event) => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        })
+
+        this._ctx = canvas.getContext("2d")!;
+
+        document.body.appendChild(canvas);
     }
 
     addRenderEntity(entity: ScratchEntity): void {
@@ -28,19 +41,13 @@ export class GraphicsHandler extends ScratchSceneScript {
         this._renderedEntities.delete(entity.id);
     }
 
-    setCanvasRenderingContext(ctx: CanvasRenderingContext2D): void {
-        this._ctx = ctx;
+    update(): void {
+        this._ctx.clearRect(0, 0, this._ctx!.canvas.width, this._ctx!.canvas.height);
 
-        this.update = () => {
-            this._ctx!.clearRect(0, 0, this._ctx!.canvas.width, this._ctx!.canvas.height);
-
-            for(const entity of this._entityHandler.getEntities(this._renderedEntities)) {
-                entity.emit('render', this._ctx);
-            }
-        };
+        for(const entity of this._entityHandler.getEntities(this._renderedEntities)) {
+            entity.emit('render', this._ctx);
+        }
     }
-
-    update(): void {}
 
     dispose(): void {
     }
