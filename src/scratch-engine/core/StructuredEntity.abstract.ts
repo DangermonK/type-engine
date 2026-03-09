@@ -5,8 +5,9 @@ import { TransformComponent } from "../components/TransformComponent";
 import {IScratchEntityOptions} from "../interfaces/IScratchEntityOptions";
 import { IScratchEntity } from "../interfaces/ISerializedData";
 import {ITransformComponent} from "../components/ITransformComponent";
+import {Vector2} from "../utils/Vector2";
 
-export abstract class StructuredEntity extends Processor<ScratchComponent> {
+export abstract class StructuredEntity<Vector> extends Processor<ScratchComponent> {
 
     private readonly _scene: ScratchScene;
     private readonly _id: string;
@@ -22,7 +23,7 @@ export abstract class StructuredEntity extends Processor<ScratchComponent> {
         this._options = options;
     }
 
-    abstract get transform(): ITransformComponent;
+    abstract get transform(): ITransformComponent<Vector>;
 
     get options(): IScratchEntityOptions {
         return this._options;
