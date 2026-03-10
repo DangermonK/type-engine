@@ -1,8 +1,6 @@
 import {ScratchComponent} from "../core/ScratchComponent.abstract";
 import {ScratchEntity} from "../core/ScratchEntity.abstract";
 import {GraphicsHandler} from "../scene-scripts/GraphicsHandler";
-import { TransformComponent } from "./TransformComponent";
-
 
 export class RenderComponent extends ScratchComponent {
 
@@ -11,7 +9,6 @@ export class RenderComponent extends ScratchComponent {
     constructor(entity: ScratchEntity) {
         super(entity);
 
-        this.container.requireType(TransformComponent);
         this._renderer = this.container.scene.requireType(GraphicsHandler);
     }
 

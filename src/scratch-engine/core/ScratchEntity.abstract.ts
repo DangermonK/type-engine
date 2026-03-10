@@ -1,9 +1,9 @@
 import { ScratchScene } from "./ScratchScene.abstract";
 import { Processor } from "../../core/container/Processor";
 import { ScratchComponent } from "./ScratchComponent.abstract";
-import { TransformComponent } from "../components/TransformComponent";
 import {IScratchEntityOptions} from "../interfaces/IScratchEntityOptions";
 import { IScratchEntity } from "../interfaces/ISerializedData";
+import {TransformComponent} from "../components/TransformComponent";
 
 export abstract class ScratchEntity extends Processor<ScratchComponent> {
 

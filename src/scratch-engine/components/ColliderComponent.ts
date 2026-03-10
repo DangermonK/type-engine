@@ -6,7 +6,6 @@ import { IBounds } from "../interfaces/IBounds";
 import { BoxCollider } from "../utils/collider/BoxCollider";
 import { Collider } from "../utils/collider/Collider.abstract";
 import { IVector2 } from "../interfaces/IVector2";
-import { TransformComponent } from "./TransformComponent";
 import { ICollisionInfo } from "../utils/IHitInfo";
 import { ICollision } from "../interfaces/ICollision";
 
@@ -33,8 +32,6 @@ export class ColliderComponent extends ScratchComponent {
         this._collisionHandler = this.container.scene.requireType(CollisionHandler);
 
         this.setTrigger(false);
-
-        this.container.requireType(TransformComponent);
     }
 
     setCollider(collider: Collider): void {

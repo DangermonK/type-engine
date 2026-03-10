@@ -3,31 +3,37 @@ import { IVector2 } from "../interfaces/IVector2";
 
 export class Vector2 implements IVector2 {
 
-    public x: number;
-    public y: number;
+    private _x: number;
+    private _y: number;
 
     constructor(x: number = 0, y: number = 0) {
-        this.x = x;
-        this.y = y;
+        this._x = x;
+        this._y = y;
     }
 
+    get x(): number { return this._x; }
+    get y(): number { return this._y; }
+
+    set x(value: number) { this._x = value; }
+    set y(value: number) { this._y = value; }
+
     set(x: number, y: number): void {
-      this.x = x;
-      this.y = y;
+      this._x = x;
+      this._y = y;
     }
 
     dot(vector: Vector2): number {
-        return this.x * vector.x + this.y * vector.y;
+        return this._x * vector.x + this._y * vector.y;
     }
 
     add(vec: Vector2): void {
-        this.x += vec.x;
-        this.y += vec.y;
+        this._x += vec.x;
+        this._y += vec.y;
     }
 
     subtract(vec: Vector2): void {
-        this.x -= vec.x;
-        this.y -= vec.y;
+        this._x -= vec.x;
+        this._y -= vec.y;
     }
 
     normalize(): void {
@@ -35,8 +41,8 @@ export class Vector2 implements IVector2 {
         if(magnitude == 0)
             this.set(0, 0);
 
-        this.x /= magnitude;
-        this.y /= magnitude;
+        this._x /= magnitude;
+        this._y /= magnitude;
     }
 
     normalized(): Vector2 {
@@ -45,33 +51,33 @@ export class Vector2 implements IVector2 {
             return new Vector2();
 
         return new Vector2(
-            this.x / magnitude,
-            this.y / magnitude
+            this._x / magnitude,
+            this._y / magnitude
         );
     }
 
     stretch(length: number) {
         this.normalize();
-        this.x *= length;
-        this.y *= length;
+        this._x *= length;
+        this._y *= length;
     }
 
     magnitude(): number {
-        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+        return Math.sqrt(Math.pow(this._x, 2) + Math.pow(this._y, 2));
     }
 
     lerp(target: Vector2, time: number): void {
-        const diffx = target.x - this.x;
-        const diffy = target.y - this.y;
-        this.set(this.x + diffx * time, this.y + diffy * time);
+        const diffx = target.x - this._x;
+        const diffy = target.y - this._y;
+        this.set(this._x + diffx * time, this._y + diffy * time);
     }
 
     negated(): Vector2 {
-        return new Vector2(-this.x, -this.y);
+        return new Vector2(-this._x, -this._y);
     }
 
     normal(): Vector2 {
-        return new Vector2(this.y, -this.x);
+        return new Vector2(this._y, -this._x);
     }
 
 }
