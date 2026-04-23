@@ -3,7 +3,7 @@ import { Processor } from "../../core/container/Processor";
 import { ScratchComponent } from "./ScratchComponent.abstract";
 import {IScratchEntityOptions} from "../interfaces/IScratchEntityOptions";
 import { IScratchEntity } from "../interfaces/ISerializedData";
-import {TransformComponent} from "../components/TransformComponent";
+import {ITransformComponent} from "../components/ITransformComponent";
 
 export abstract class ScratchEntity extends Processor<ScratchComponent> {
 
@@ -12,8 +12,6 @@ export abstract class ScratchEntity extends Processor<ScratchComponent> {
 
     private readonly _options: IScratchEntityOptions;
 
-    public readonly transform: TransformComponent;
-
     protected constructor(id: string, scene: ScratchScene, options: IScratchEntityOptions) {
         super();
 
@@ -21,9 +19,9 @@ export abstract class ScratchEntity extends Processor<ScratchComponent> {
         this._id = id;
 
         this._options = options;
-
-        this.transform = this.requireType(TransformComponent);
     }
+
+    abstract get transform(): ITransformComponent;
 
     get options(): IScratchEntityOptions {
         return this._options;

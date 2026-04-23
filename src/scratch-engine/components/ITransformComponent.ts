@@ -1,23 +1,19 @@
-
+export interface IVector2Like {
+    x: number;
+    y: number;
+}
 
 export interface ITransformComponent {
-
-    get position(): { x: number, y: number };
-
-    set position(position: { x: number, y: number });
+    get position(): IVector2Like;
+    set position(position: IVector2Like);
 
     get rotation(): number;
-
     set rotation(rotation: number);
 
-    get size(): { x: number, y: number };
+    get size(): IVector2Like;
+    set size(size: IVector2Like);
 
-    set size(size: { x: number, y: number });
-
-    scale(scale: { x: number, y: number }): void;
-
+    scale(scale: IVector2Like): void;
     translate(x: number, y: number): void;
-
     rotate(angle: number): void;
-
 }

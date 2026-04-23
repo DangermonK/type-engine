@@ -1,25 +1,26 @@
 import { ScratchComponent } from "../core/ScratchComponent.abstract";
-import { DisplayObject } from "pixi.js";
+import {Container, DisplayObject} from "pixi.js";
 import { PixiRenderer } from "../scene-scripts/PixiRenderer";
 import { ScratchEntity } from "../core/ScratchEntity.abstract";
+import {ITransformComponent, IVector2Like} from "./ITransformComponent";
 
-export class PixiComponent extends ScratchComponent {
+export class PixiComponent extends ScratchComponent implements ITransformComponent {
 
 	protected pixiObject!: DisplayObject;
 
 	private readonly pixiRenderer: PixiRenderer;
 
-	constructor(entity: ScratchEntity, pixiObject: DisplayObject) {
+	constructor(entity: ScratchEntity, pixiObject: DisplayObject = new Container()) {
 		super(entity);
 
 		this.pixiRenderer = this.container.scene.requireType(PixiRenderer);
-		this.setDisplayObject(pixiObject)
+		this.pixiObject = pixiObject;
+		this.pixiRenderer.addRenderElement(this.pixiObject);
 	}
 
 	setDisplayObject(pixiObject: DisplayObject): void {
 		this.pixiRenderer.removeRenderElement(this.pixiObject);
 		this.pixiObject = pixiObject;
-		this.overrideTransform();
 		this.pixiRenderer.addRenderElement(this.pixiObject);
 	}
 
@@ -27,40 +28,33 @@ export class PixiComponent extends ScratchComponent {
 		this.pixiRenderer.removeRenderElement(this.pixiObject);
 	}
 
-	overrideTransform() {
-		this.pixiObject.position = this.container.transform.position;
-		this.pixiObject.rotation = this.container.transform.rotation;
-		this.pixiObject.scale = this.container.transform.size;
-
-		Object.defineProperties(this.container.transform.position, {
-			_x: {
-				get: () => this.pixiObject.position.x,
-				set: (val) => this.pixiObject.position.x = val,
-			},
-			_y: {
-				get: () => this.pixiObject.position.y,
-				set: (val) => this.pixiObject.position.y = val,
-			},
-		})
-
-		Object.defineProperties(this.container.transform.size, {
-			_x: {
-				get: () => this.pixiObject.scale.x,
-				set: (val) => this.pixiObject.scale.x = val,
-			},
-			_y: {
-				get: () => this.pixiObject.scale.y,
-				set: (val) => this.pixiObject.scale.y = val,
-			},
-		})
-
-		Object.defineProperty(this.container.transform, "rotation", {
-			get: () => this.pixiObject.rotation,
-			set: (val) => this.pixiObject.rotation = val,
-		})
+	initialize(): void {
 	}
 
-	initialize(): void {
+	get position(): IVector2Like {
+		return this.pixiObject.position;
+	}
+
+	rotate(angle: number): void {
+		this.pixiObject.rotation += angle;
+	}
+
+	get rotation(): number {
+		return this.pixiObject.rotation;
+	}
+
+	scale(scale: IVector2Like): void {
+		this.pixiObject.scale.x *= scale.x;
+		this.pixiObject.scale.y *= scale.y;
+	}
+
+	get size(): IVector2Like {
+		return this.pixiObject.scale;
+	}
+
+	translate(x: number, y: number): void {
+		this.pixiObject.position.x += x;
+		this.pixiObject.position.y += y;
 	}
 
 }
