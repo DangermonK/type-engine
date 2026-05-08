@@ -30,8 +30,10 @@ export class Container<Type extends Scriptable<any>> implements IContainer<Type>
         return element;
     }
 
-    getElement<Element extends Type>(element: { new(...args: any): Element }): Element {
-        return this._scriptMap.get(element);
+    getElement<Element extends Type>(ctor: new (...args: any[]) => Element): Element {
+        return this._scriptMap.get(ctor) ?? this._scriptMap.all.find(
+            (item) => item instanceof ctor
+        ) as Element;
     }
 
     hasType<Element extends Type>(element: { new(...args: any): Element }): boolean {

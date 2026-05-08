@@ -12,8 +12,8 @@ import { ICollision } from "../interfaces/ICollision";
 
 export class ColliderComponent extends ScratchComponent {
 
-    private _collider: Collider = new BoxCollider();
-	private _offset: Vector2;
+    protected _collider: Collider = new BoxCollider();
+	protected _offset: Vector2;
 
     private readonly _hashCoords: Array<string>;
     private readonly _collisionHandler: CollisionHandler;

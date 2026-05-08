@@ -19,6 +19,7 @@ export class PixiComponent extends ScratchComponent implements ITransformCompone
 	}
 
 	setDisplayObject(pixiObject: DisplayObject): void {
+		pixiObject.transform = this.pixiObject.transform;
 		this.pixiRenderer.removeRenderElement(this.pixiObject);
 		this.pixiObject = pixiObject;
 		this.pixiRenderer.addRenderElement(this.pixiObject);

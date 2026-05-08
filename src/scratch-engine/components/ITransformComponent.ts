@@ -1,7 +1,9 @@
 export interface IVector2Like {
     x: number;
     y: number;
+    z?: number;
 }
+
 
 export interface ITransformComponent {
     get position(): IVector2Like;
